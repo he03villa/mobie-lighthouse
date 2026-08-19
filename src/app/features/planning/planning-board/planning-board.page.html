@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/planning"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ board?.name || 'Tablero' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addColumn()">
+        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-loading-spinner *ngIf="loading" message="Cargando tablero..."></app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+    <app-empty-state
+      *ngIf="columns.length === 0"
+      icon="layers-outline"
+      title="Sin columnas"
+      subtitle="Agrega columnas para organizar tus tareas"
+    ></app-empty-state>
+
+    <div class="board-container" *ngIf="columns.length > 0">
+      <div class="board-column" *ngFor="let column of columns">
+        <div class="column-header">
+          <span class="column-name">{{ column.name }}</span>
+          <div class="column-actions">
+            <ion-button fill="clear" size="small" (click)="addTask(column.id)">
+              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small" color="danger" (click)="deleteColumn(column.id)">
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+        <div class="column-body">
+          <app-empty-state
+            *ngIf="!column.tasks || column.tasks.length === 0"
+            icon="reorder-three-outline"
+            title="Sin tareas"
+          ></app-empty-state>
+          <app-task-card
+            *ngFor="let task of column.tasks"
+            [task]="task"
+            (delete)="deleteTask($event)"
+          ></app-task-card>
+        </div>
+      </div>
+
+      <div class="board-column add-column" (click)="addColumn()">
+        <ion-icon name="add-outline"></ion-icon>
+        <span>Agregar columna</span>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

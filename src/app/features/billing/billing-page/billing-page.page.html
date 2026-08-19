@@ -1,0 +1,90 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Facturacion</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Facturacion</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando facturacion..."></app-loading-spinner>
+    } @else if (billing) {
+      <div class="plan-card">
+        <div class="plan-header">
+          <div>
+            <h3 class="plan-name">{{ billing.plan.name }}</h3>
+            <p class="plan-price">
+              {{ formatCurrency(billing.plan.price_monthly, billing.plan.currency) }}
+              <span class="text-muted">/mes</span>
+            </p>
+          </div>
+          @if (billing.subscription) {
+            <span class="status-chip" [ngClass]="'status-' + getStatusColor(billing.subscription.status === 'active' ? 'open' : 'void')">
+              {{ billing.subscription.status === 'active' ? 'Activo' : billing.subscription.status }}
+            </span>
+          }
+        </div>
+
+        <div class="usage-section">
+          <div class="usage-row">
+            <span class="text-secondary">Participantes</span>
+            <span class="text-muted">{{ billing.usage.participants }}</span>
+          </div>
+          <div class="usage-row">
+            <span class="text-secondary">Coaches</span>
+            <span class="text-muted">{{ billing.usage.coaches }}</span>
+          </div>
+        </div>
+
+        <ion-button expand="block" fill="outline" class="portal-btn" (click)="openPortal()">
+          <ion-icon name="open-outline" slot="start"></ion-icon>
+          Administrar suscripcion
+        </ion-button>
+      </div>
+
+      <h2 class="section-title">Facturas</h2>
+      @if (invoices.length === 0) {
+        <app-empty-state
+          icon="receipt-outline"
+          title="Sin facturas"
+          subtitle="Tus facturas aparecerán aquí"
+        ></app-empty-state>
+      } @else {
+        <ion-list>
+          @for (invoice of invoices; track invoice.id) {
+            <ion-item [href]="invoice.invoice_pdf || invoice.hosted_invoice_url" target="_blank" detail="false">
+              <ion-icon name="receipt-outline" slot="start"></ion-icon>
+              <ion-label>
+                <h2>{{ formatCurrency(invoice.amount, invoice.currency) }}</h2>
+                <p>
+                  @if (invoice.paid_at) {
+                    {{ invoice.paid_at | date:'dd MMM yyyy' }}
+                  } @else if (invoice.due_date) {
+                    Vence {{ invoice.due_date | date:'dd MMM yyyy' }}
+                  }
+                </p>
+              </ion-label>
+              <ion-note slot="end">
+                <span class="status-chip" [ngClass]="'status-' + getStatusColor(invoice.status)">
+                  {{ getStatusLabel(invoice.status) }}
+                </span>
+              </ion-note>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    } @else {
+      <app-empty-state
+        icon="wallet-outline"
+        title="Sin información de facturación"
+        subtitle="No se pudo cargar la información de tu suscripción"
+      ></app-empty-state>
+    }
+  </div>
+</ion-content>

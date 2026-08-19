@@ -1,0 +1,88 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/participants"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Participante</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando participante..."></app-loading-spinner>
+    } @else if (participant) {
+      <div class="info-card surface-panel">
+        <div class="participant-avatar">
+          {{ participant.first_name.charAt(0) }}
+        </div>
+        <div class="participant-info">
+          <h2>{{ participant.full_name }}</h2>
+          @if (participant.birth_date) {
+            <p class="text-muted">{{ participant.birth_date | date:'dd MMMM yyyy' }}</p>
+          }
+        </div>
+      </div>
+
+      @if (participant.guardians && participant.guardians.length > 0) {
+        <h2 class="section-title">Tutores</h2>
+        <div class="surface-panel">
+          <ion-list lines="none">
+            @for (guardian of participant.guardians; track guardian.id) {
+              <ion-item>
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                <ion-label>
+                  <h3>{{ guardian.name }}</h3>
+                  <p>{{ guardian.email }}</p>
+                </ion-label>
+                @if (guardian.is_primary) {
+                  <ion-badge color="primary" slot="end">Principal</ion-badge>
+                }
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      }
+
+      @if (participant.groups && participant.groups.length > 0) {
+        <h2 class="section-title">Grupos</h2>
+        <div class="surface-panel">
+          <ion-list lines="none">
+            @for (group of participant.groups; track group.id) {
+              <ion-item>
+                <ion-icon name="people-outline" slot="start"></ion-icon>
+                <ion-label>
+                  <h3>{{ group.name }}</h3>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      }
+
+      @if (participant.groups && participant.groups.length === 0 && (!participant.guardians || participant.guardians.length === 0)) {
+        <app-empty-state
+          icon="person-outline"
+          title="Sin información adicional"
+          subtitle="Este participante no tiene tutores ni grupos asignados"
+        ></app-empty-state>
+      }
+
+      <div class="action-buttons">
+        <ion-button expand="block" (click)="editParticipant()">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar participante
+        </ion-button>
+        <ion-button expand="block" fill="outline" color="danger" (click)="deleteParticipant()">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Eliminar participante
+        </ion-button>
+      </div>
+    } @else {
+      <app-empty-state
+        icon="person-outline"
+        title="Participante no encontrado"
+      ></app-empty-state>
+    }
+  </div>
+</ion-content>

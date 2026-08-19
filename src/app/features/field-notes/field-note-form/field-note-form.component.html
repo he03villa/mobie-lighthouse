@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/field-notes"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva nota de campo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="loading">
+        @if (loading) {
+          <ion-spinner name="crescent" slot="end"></ion-spinner>
+        }
+        Guardar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    <div class="surface-panel">
+      <ion-item>
+        <ion-label position="floating">ID del participante</ion-label>
+        <ion-input
+          [(ngModel)]="participantId"
+          placeholder="ID del participante"
+          [disabled]="loading"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Contenido</ion-label>
+        <ion-textarea
+          [(ngModel)]="content"
+          placeholder="Escribe tu nota de campo..."
+          [rows]="5"
+          [disabled]="loading"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Visibilidad</ion-label>
+        <ion-select [(ngModel)]="visibility" [disabled]="loading">
+          <ion-select-option value="private">Privada</ion-select-option>
+          <ion-select-option value="shared_family">Compartir con familia</ion-select-option>
+          <ion-select-option value="shared_participant">Compartir con participante</ion-select-option>
+          <ion-select-option value="public">Pública</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Fecha de sesión</ion-label>
+        <ion-input
+          type="date"
+          [(ngModel)]="sessionDate"
+          [disabled]="loading"
+        ></ion-input>
+      </ion-item>
+    </div>
+  </div>
+</ion-content>

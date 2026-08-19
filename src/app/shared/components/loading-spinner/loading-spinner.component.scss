@@ -1,0 +1,19 @@
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+
+  ion-spinner {
+    --color: var(--lh-primary-700);
+    width: 36px;
+    height: 36px;
+  }
+
+  ion-label {
+    font-size: 14px;
+    color: var(--lh-text-secondary);
+  }
+}

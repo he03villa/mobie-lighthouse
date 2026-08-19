@@ -1,0 +1,104 @@
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.program-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--lh-primary-bg);
+  color: var(--lh-primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.program-info {
+  flex: 1;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--lh-text);
+    margin: 0 0 4px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 12px;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lh-text);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--lh-text);
+  margin: 8px 0 0;
+}
+
+ion-list {
+  --ion-item-background: transparent;
+}
+
+ion-item {
+  --min-height: 48px;
+  padding: 8px 0;
+}
+
+ion-icon[slot='start'] {
+  margin-inline-end: 12px;
+  color: var(--lh-primary-700);
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  ion-button {
+    --border-radius: 8px;
+    --background: var(--lh-primary-700);
+    --color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+
+    &[fill='outline'] {
+      --background: transparent;
+      --color: var(--lh-text-secondary);
+      --border-color: var(--lh-border);
+    }
+
+    &[color='danger'][fill='outline'] {
+      --color: var(--lh-error);
+      --border-color: var(--lh-error);
+    }
+  }
+}

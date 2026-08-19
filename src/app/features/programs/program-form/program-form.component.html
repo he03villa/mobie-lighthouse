@@ -1,0 +1,187 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/programs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar Programa' : 'Nuevo Programa' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-wrap">
+      <ion-label>Cargando...</ion-label>
+    </div>
+  } @else {
+    <div class="form-page">
+
+      <!-- Program fields -->
+      <section class="form-section">
+        <h3 class="section-title">Datos del Programa</h3>
+
+        <ion-item>
+          <ion-label position="floating">Nombre *</ion-label>
+          <ion-input [(ngModel)]="name" name="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Descripcion</ion-label>
+          <ion-textarea [(ngModel)]="description" name="description" rows="3"></ion-textarea>
+        </ion-item>
+
+        <div class="field-row">
+          <ion-item class="half">
+            <ion-label position="floating">Grupo de edad</ion-label>
+            <ion-input [(ngModel)]="ageGroup" name="ageGroup"></ion-input>
+          </ion-item>
+
+          <ion-item class="half">
+            <ion-label position="floating">Duracion (semanas)</ion-label>
+            <ion-input [(ngModel)]="durationWeeks" name="durationWeeks" type="number"></ion-input>
+          </ion-item>
+        </div>
+
+        <ion-item>
+          <ion-label>
+            <h3>Publicar</h3>
+            <p>Visible para participantes</p>
+          </ion-label>
+          <ion-toggle [(ngModel)]="isPublished" slot="end"></ion-toggle>
+        </ion-item>
+      </section>
+
+      <!-- Thumbnail -->
+      <section class="form-section">
+        <h3 class="section-title">Thumbnail</h3>
+
+        @if (thumbnailUrl) {
+          <div class="thumbnail-preview">
+            <img [src]="thumbnailUrl" alt="Thumbnail" />
+            <ion-button fill="clear" color="danger" (click)="thumbnailUrl = ''">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Quitar
+            </ion-button>
+          </div>
+        } @else {
+          <label class="thumbnail-upload">
+            <ion-icon name="image-outline"></ion-icon>
+            <span>Seleccionar imagen</span>
+            <input type="file" accept="image/*" (change)="onThumbnailSelected($event)" hidden />
+          </label>
+        }
+      </section>
+
+      <!-- Modules -->
+      <section class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">Modulos</h3>
+          <ion-button fill="clear" size="small" (click)="addModule()">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Agregar
+          </ion-button>
+        </div>
+
+        @if (modules.length === 0) {
+          <p class="empty-text">Sin modulos. Agrega un modulo para estructurar el programa.</p>
+        }
+
+        @for (mod of modules; track $index; let i = $index) {
+          <ion-card class="module-card">
+            <div class="module-header" (click)="toggleModule(i)">
+              <div class="module-header-left">
+                <ion-icon [name]="mod.expanded ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
+                <span class="module-name">{{ mod.name || 'Modulo sin nombre' }}</span>
+                <ion-chip color="medium" class="activity-count">{{ mod.activities.length }} actividades</ion-chip>
+              </div>
+              <ion-button fill="clear" color="danger" size="small" (click)="removeModule(i); $event.stopPropagation()">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+
+            @if (mod.expanded) {
+              <ion-card-content>
+                <ion-item>
+                  <ion-label position="floating">Nombre del modulo *</ion-label>
+                  <ion-input [(ngModel)]="mod.name" [name]="'mod-name-' + i"></ion-input>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label position="floating">Descripcion del modulo</ion-label>
+                  <ion-textarea [(ngModel)]="mod.description" [name]="'mod-desc-' + i" rows="2"></ion-textarea>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label position="floating">Orden</ion-label>
+                  <ion-input [(ngModel)]="mod.order" [name]="'mod-order-' + i" type="number"></ion-input>
+                </ion-item>
+
+                <!-- Activities -->
+                <div class="activities-section">
+                  <div class="activities-header">
+                    <h4>Actividades</h4>
+                    <ion-button fill="clear" size="small" (click)="addActivity(i)">
+                      <ion-icon name="add-outline" slot="start"></ion-icon>
+                      Agregar actividad
+                    </ion-button>
+                  </div>
+
+                  @for (act of mod.activities; track $index; let j = $index) {
+                    <div class="activity-card">
+                      <div class="activity-row">
+                        <div class="activity-fields">
+                          <ion-item>
+                            <ion-label position="floating">Nombre *</ion-label>
+                            <ion-input [(ngModel)]="act.name" [name]="'act-name-' + i + '-' + j"></ion-input>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label position="floating">Descripcion</ion-label>
+                            <ion-textarea [(ngModel)]="act.description" [name]="'act-desc-' + i + '-' + j" rows="2"></ion-textarea>
+                          </ion-item>
+
+                          <div class="field-row">
+                            <ion-item class="half">
+                              <ion-label position="floating">Tipo</ion-label>
+                              <ion-select [(ngModel)]="act.type" [name]="'act-type-' + i + '-' + j" interface="popover">
+                                @for (t of activityTypes; track t.value) {
+                                  <ion-select-option [value]="t.value">{{ t.label }}</ion-select-option>
+                                }
+                              </ion-select>
+                            </ion-item>
+
+                            <ion-item class="half">
+                              <ion-label position="floating">Orden</ion-label>
+                              <ion-input [(ngModel)]="act.order" [name]="'act-order-' + i + '-' + j" type="number"></ion-input>
+                            </ion-item>
+                          </div>
+
+                          </div>
+
+                        <ion-button fill="clear" color="danger" size="small" (click)="removeActivity(i, j)">
+                          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </ion-card-content>
+            }
+          </ion-card>
+        }
+      </section>
+
+      <!-- Save -->
+      <div class="form-actions">
+        <ion-button
+          expand="block"
+          (click)="save()"
+          [disabled]="!name.trim() || saving"
+          class="save-btn"
+        >
+          {{ saving ? 'Guardando...' : (isEdit ? 'Guardar cambios' : 'Crear programa') }}
+        </ion-button>
+      </div>
+
+    </div>
+  }
+</ion-content>

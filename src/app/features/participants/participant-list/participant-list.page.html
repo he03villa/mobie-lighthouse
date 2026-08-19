@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Participantes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Participantes</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="page">
+    <ion-searchbar
+      placeholder="Buscar participantes..."
+      [debounce]="300"
+      (ionInput)="onSearch($any($event).detail.value!)"
+    ></ion-searchbar>
+
+    @if (loading) {
+      <app-loading-spinner message="Cargando participantes..."></app-loading-spinner>
+    } @else if (filtered.length === 0) {
+      <app-empty-state
+        icon="people-outline"
+        title="Sin participantes"
+        subtitle="Agrega tu primer participante para comenzar"
+      >
+        <ion-button fill="outline" (click)="navigateToCreate()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Agregar participante
+        </ion-button>
+      </app-empty-state>
+    } @else {
+      <ion-list>
+        @for (participant of filtered; track participant.id) {
+          <ion-item
+            button
+            detail="false"
+            (click)="navigateToDetail(participant.id)"
+            class="participant-item"
+          >
+            <div class="participant-avatar" slot="start">
+              {{ participant.first_name.charAt(0) }}
+            </div>
+            <ion-label>
+              <h2>{{ participant.full_name }}</h2>
+              @if (participant.groups && participant.groups.length > 0) {
+                <p>
+                  <ion-icon name="people-outline"></ion-icon>
+                  {{ participant.groups.length }} {{ participant.groups.length === 1 ? 'grupo' : 'grupos' }}
+                </p>
+              }
+            </ion-label>
+            <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,32 @@
+:host {
+  display: block;
+}
+
+.board-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  border-bottom: 1px solid var(--lh-border);
+}
+
+.board-icon {
+  color: var(--lh-primary-700);
+  font-size: 22px;
+  margin-right: 12px;
+}
+
+.board-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--lh-text);
+  margin: 0;
+}
+
+.board-meta {
+  display: flex;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--lh-text-muted);
+  margin-top: 2px;
+}

@@ -1,0 +1,95 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/programs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Programa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando programa..."></app-loading-spinner>
+    } @else if (program) {
+      <div class="info-card surface-panel">
+        <div class="program-icon">
+          <ion-icon name="school-outline"></ion-icon>
+        </div>
+        <div class="program-info">
+          <h2>{{ program.name }}</h2>
+          @if (program.description) {
+            <p class="text-secondary">{{ program.description }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="details-grid surface-panel">
+        @if (program.age_group) {
+          <div class="detail-item">
+            <span class="detail-label text-muted">Grupo de edad</span>
+            <span class="detail-value">{{ program.age_group }}</span>
+          </div>
+        }
+        @if (program.duration_weeks) {
+          <div class="detail-item">
+            <span class="detail-label text-muted">Duración</span>
+            <span class="detail-value">{{ program.duration_weeks }} semanas</span>
+          </div>
+        }
+        <div class="detail-item">
+          <span class="detail-label text-muted">Estado</span>
+          @if (program.is_published) {
+            <span class="status-chip status-success">Publicado</span>
+          } @else {
+            <span class="status-chip status-neutral">Borrador</span>
+          }
+        </div>
+      </div>
+
+      @if (program.modules && program.modules.length > 0) {
+        <h2 class="section-title">Módulos</h2>
+        <div class="surface-panel">
+          <ion-list lines="none">
+            @for (mod of program.modules; track mod.id) {
+              <ion-item>
+                <ion-icon name="list-outline" slot="start"></ion-icon>
+                <ion-label>
+                  <h3>{{ mod.name }}</h3>
+                  @if (mod.description) {
+                    <p>{{ mod.description }}</p>
+                  }
+                </ion-label>
+                @if (mod.activities) {
+                  <ion-note slot="end">
+                    {{ mod.activities.length }} {{ mod.activities.length === 1 ? 'actividad' : 'actividades' }}
+                  </ion-note>
+                }
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      }
+
+      <div class="action-buttons">
+        <ion-button expand="block" (click)="togglePublish()">
+          <ion-icon [name]="program.is_published ? 'time-outline' : 'checkmark-circle-outline'" slot="start"></ion-icon>
+          {{ program.is_published ? 'Despublicar' : 'Publicar' }}
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="editProgram()">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar programa
+        </ion-button>
+        <ion-button expand="block" fill="outline" color="danger" (click)="deleteProgram()">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Eliminar programa
+        </ion-button>
+      </div>
+    } @else {
+      <app-empty-state
+        icon="school-outline"
+        title="Programa no encontrado"
+      ></app-empty-state>
+    }
+  </div>
+</ion-content>

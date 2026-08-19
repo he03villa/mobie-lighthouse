@@ -1,0 +1,47 @@
+// ============================================================
+// Lighthouse Mobile — Design Tokens
+// ============================================================
+
+// --- Fonts (loaded via Google Fonts in index.html) ---
+$font-ui: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+$font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+// --- Spacing (4px grid) ---
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-6: 24px;
+$space-8: 32px;
+$space-12: 48px;
+
+// --- Radius (concentric) ---
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 9999px;
+
+// --- Depth ---
+$shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06), 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+$shadow-card-hover: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.08), 0 4px 8px 0 rgba(0, 0, 0, 0.06);
+$shadow-pop: 0 8px 24px -8px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
+
+// --- Motion ---
+$transition-fast: all 0.15s ease;
+$transition-base: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+// --- Runtime color aliases ---
+$primary: var(--lh-primary-700);
+$primary-600: var(--lh-primary-600);
+$primary-500: var(--lh-primary-500);
+$primary-dark: var(--lh-primary-800);
+$accent: var(--lh-success);
+$warn: var(--lh-warn);
+$bg: var(--lh-bg);
+$surface: var(--lh-surface);
+$surface-muted: var(--lh-surface-muted);
+$card-border: var(--lh-border);
+$text: var(--lh-text);
+$text-secondary: var(--lh-text-secondary);
+$text-muted: var(--lh-text-muted);

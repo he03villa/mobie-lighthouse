@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Actividades</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Actividades</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="page">
+    <ion-segment [value]="statusFilter" (ionChange)="filterByStatus($any($event).detail.value)">
+      <ion-segment-button value="all">Todos</ion-segment-button>
+      <ion-segment-button value="pending">Pendientes</ion-segment-button>
+      <ion-segment-button value="submitted">Enviados</ion-segment-button>
+      <ion-segment-button value="reviewed">Revisados</ion-segment-button>
+    </ion-segment>
+
+    <ion-searchbar
+      placeholder="Buscar actividades..."
+      [debounce]="300"
+      (ionInput)="onSearch($any($event).detail.value!)"
+    ></ion-searchbar>
+
+    @if (loading) {
+      <app-loading-spinner message="Cargando actividades..."></app-loading-spinner>
+    } @else if (filteredSubmissions.length === 0) {
+      <app-empty-state
+        icon="folder-open-outline"
+        title="Sin actividades"
+        subtitle="No se encontraron actividades con los filtros seleccionados"
+      ></app-empty-state>
+    } @else {
+      <ion-list>
+        @for (submission of filteredSubmissions; track submission.id) {
+          <ion-item
+            button
+            detail="false"
+            (click)="navigateToDetail(submission.id)"
+            class="activity-item"
+          >
+            <ion-icon
+              [name]="
+                submission.status === 'approved' || submission.status === 'reviewed'
+                  ? 'checkmark-circle-outline'
+                  : submission.status === 'rejected'
+                    ? 'close-circle-outline'
+                    : 'time-outline'
+              "
+              [color]="getStatusColor(submission.status)"
+              slot="start"
+            ></ion-icon>
+            <ion-label>
+              <h2>{{ submission.activity.name }}</h2>
+              <p>
+                {{ submission.enrollment.participant.full_name }}
+                @if (submission.submitted_at) {
+                  &middot; {{ submission.submitted_at | date:'dd MMM yyyy' }}
+                }
+              </p>
+            </ion-label>
+            <ion-note slot="end">
+              <span class="status-chip" [ngClass]="'status-' + getStatusColor(submission.status)">
+                {{ getStatusLabel(submission.status) }}
+              </span>
+            </ion-note>
+            <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </div>
+
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content pullingText="Actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+  </ion-refresher>
+</ion-content>

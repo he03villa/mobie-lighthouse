@@ -1,0 +1,47 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Diario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Diario</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-loading-spinner *ngIf="loading" message="Cargando entradas..."></app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+    <app-empty-state
+      *ngIf="entries.length === 0"
+      icon="document-text-outline"
+      title="Sin entradas"
+      subtitle="Comienza a escribir en tu diario"
+    ></app-empty-state>
+
+    <ion-list *ngIf="entries.length > 0">
+      <ion-item
+        *ngFor="let entry of entries"
+        class="entry-item"
+        (click)="navigateToDetail(entry.id)"
+        button
+        detail
+      >
+        <ion-icon
+          slot="start"
+          [name]="getVisibilityIcon(entry.visibility)"
+          class="entry-icon"
+        ></ion-icon>
+        <ion-label>
+          <p class="entry-content">{{ entry.content | slice:0:80 }}{{ entry.content.length > 80 ? '...' : '' }}</p>
+          <div class="entry-meta">
+            <span>{{ formatDate(entry.entry_date || entry.created_at) }}</span>
+            <span *ngIf="entry.participant"> · {{ entry.participant.full_name }}</span>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

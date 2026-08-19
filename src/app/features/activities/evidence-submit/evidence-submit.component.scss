@@ -1,0 +1,93 @@
+.form-section {
+  h3.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--lh-text);
+    margin: 0 0 12px;
+  }
+}
+
+.form-textarea {
+  --background: var(--lh-surface-muted);
+  --color: var(--lh-text);
+  --placeholder-color: var(--lh-text-muted);
+  --border-radius: 8px;
+  border: 1px solid var(--lh-border);
+  padding: 12px;
+  font-size: 14px;
+}
+
+.attachment-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.attach-btn {
+  --border-radius: 8px;
+  --border-color: var(--lh-border);
+  --color: var(--lh-primary-700);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: none;
+  flex: 1;
+  height: 44px;
+}
+
+.file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--lh-surface-muted);
+  border-radius: 8px;
+  border: 1px solid var(--lh-border);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lh-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  display: block;
+  font-size: 12px;
+  color: var(--lh-text-muted);
+}
+
+.action-area {
+  padding: 8px 0 16px;
+}
+
+.submit-btn {
+  --background: var(--lh-primary-700);
+  --border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: none;
+  height: 48px;
+}

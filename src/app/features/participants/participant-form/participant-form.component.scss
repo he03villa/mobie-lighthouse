@@ -1,0 +1,10 @@
+ion-item {
+  --background: transparent;
+  --border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+ion-input {
+  --color: var(--lh-text);
+  --placeholder-color: var(--lh-text-muted);
+}

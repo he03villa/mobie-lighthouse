@@ -1,0 +1,69 @@
+<ion-content [fullscreen]="true">
+  <app-loading-spinner *ngIf="loading" message="Cargando panel..." />
+
+  <div *ngIf="!loading" class="page">
+    <div class="page-header">
+      <div>
+        <h1>Bienvenido, {{ user?.name }}</h1>
+        <p class="text-muted">{{ tenant?.name }}</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card surface-panel">
+        <div class="stat-icon">
+          <ion-icon name="people-outline"></ion-icon>
+        </div>
+        <div class="stat-value">{{ stats.participants }}</div>
+        <div class="stat-label">Participantes</div>
+      </div>
+
+      <div class="stat-card surface-panel">
+        <div class="stat-icon">
+          <ion-icon name="school-outline"></ion-icon>
+        </div>
+        <div class="stat-value">{{ stats.programs }}</div>
+        <div class="stat-label">Programas</div>
+      </div>
+
+      <div class="stat-card surface-panel">
+        <div class="stat-icon">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-value">{{ stats.submissions }}</div>
+        <div class="stat-label">Actividades recientes</div>
+      </div>
+
+      <div class="stat-card surface-panel">
+        <div class="stat-icon">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </div>
+        <div class="stat-value">{{ stats.pending }}</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Acciones rapidas</h2>
+    <div class="quick-actions">
+      <ion-button expand="block" (click)="navController.navigateForward('/activities/new')">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nueva actividad
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="navController.navigateForward('/journal')">
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        Ver diario
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="navController.navigateForward('/planning')">
+        <ion-icon name="trending-up-outline" slot="start"></ion-icon>
+        Planificacion
+      </ion-button>
+    </div>
+
+    <h2 class="section-title">Actividad reciente</h2>
+    <app-empty-state
+      icon="document-text-outline"
+      title="Sin actividad reciente"
+      subtitle="Las actividades que registres aparecerán aquí"
+    ></app-empty-state>
+  </div>
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Planificacion</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Planificacion</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-loading-spinner *ngIf="loading" message="Cargando tableros..."></app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+    <app-empty-state
+      *ngIf="boards.length === 0"
+      icon="calendar-outline"
+      title="Sin tableros"
+      subtitle="Crea tu primer tablero de planificacion"
+    ></app-empty-state>
+
+    <ion-list *ngIf="boards.length > 0">
+      <ion-item
+        *ngFor="let board of boards"
+        class="board-item"
+        (click)="navigateToBoard(board.id)"
+        button
+        detail
+      >
+        <ion-icon slot="start" name="calendar-outline" class="board-icon"></ion-icon>
+        <ion-label>
+          <h3 class="board-name">{{ board.name }}</h3>
+          <div class="board-meta">
+            <span>{{ board.columns_count || 0 }} columnas</span>
+            <span> · {{ board.tasks_count || 0 }} tareas</span>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

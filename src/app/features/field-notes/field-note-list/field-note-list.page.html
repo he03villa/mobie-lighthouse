@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Notas de Campo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Notas de Campo</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando notas..."></app-loading-spinner>
+    } @else if (notes.length === 0) {
+      <app-empty-state
+        icon="create-outline"
+        title="Sin notas de campo"
+        subtitle="Registra tu primera nota de campo para comenzar"
+      >
+        <ion-button fill="outline" (click)="navigateToCreate()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Nueva nota
+        </ion-button>
+      </app-empty-state>
+    } @else {
+      <ion-list>
+        @for (note of notes; track note.id) {
+          <ion-item class="note-item" detail="false">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>{{ note.participant.full_name }}</h2>
+              <p class="note-content">{{ note.content | slice:0:100 }}{{ note.content.length > 100 ? '...' : '' }}</p>
+              <p class="note-meta text-muted">
+                @if (note.session_date) {
+                  {{ formatDate(note.session_date) }}
+                } @else if (note.created_at) {
+                  {{ formatDate(note.created_at) }}
+                }
+              </p>
+            </ion-label>
+            <ion-note slot="end">
+              <ion-icon [name]="getVisibilityIcon(note.visibility)" color="medium"></ion-icon>
+            </ion-note>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </div>
+</ion-content>

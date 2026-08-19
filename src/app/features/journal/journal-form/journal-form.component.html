@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/journal"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar entrada' : 'Nueva entrada' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="loading || !content.trim()">
+        <ion-spinner *ngIf="loading" name="crescent" slot="icon-only"></ion-spinner>
+        <span *ngIf="!loading">Guardar</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Contenido</ion-label>
+      <ion-textarea
+        [(ngModel)]="content"
+        placeholder="Escribe tu entrada del diario..."
+        rows="8"
+        class="form-input"
+      ></ion-textarea>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Visibilidad</ion-label>
+      <ion-select [(ngModel)]="visibility" class="form-input">
+        <ion-select-option value="private">Privada</ion-select-option>
+        <ion-select-option value="shared_family">Compartida con la familia</ion-select-option>
+        <ion-select-option value="shared_participant">Compartida con el participante</ion-select-option>
+        <ion-select-option value="public">Publica</ion-select-option>
+      </ion-select>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Fecha</ion-label>
+      <ion-input
+        type="date"
+        [(ngModel)]="entryDate"
+        class="form-input"
+      ></ion-input>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">ID del participante (opcional)</ion-label>
+      <ion-input
+        [(ngModel)]="participantId"
+        placeholder="UUID del participante"
+        class="form-input"
+      ></ion-input>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,16 @@
+<div class="task-card">
+  <h4 class="task-title">{{ task.title }}</h4>
+  <p class="task-description" *ngIf="task.description">{{ task.description | slice:0:60 }}{{ task.description.length > 60 ? '...' : '' }}</p>
+  <div class="task-meta" *ngIf="task.due_date">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <span>{{ formatDate(task.due_date) }}</span>
+  </div>
+  <div class="task-actions">
+    <ion-button fill="clear" size="small" (click)="onEdit()">
+      <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" size="small" color="danger" (click)="onDelete()">
+      <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </div>
+</div>

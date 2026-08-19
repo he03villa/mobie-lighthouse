@@ -1,0 +1,55 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/planning"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar tarea' : 'Nueva tarea' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="loading || !title.trim()">
+        <ion-spinner *ngIf="loading" name="crescent" slot="icon-only"></ion-spinner>
+        <span *ngIf="!loading">Guardar</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Titulo</ion-label>
+      <ion-input
+        [(ngModel)]="title"
+        placeholder="Nombre de la tarea"
+        class="form-input"
+      ></ion-input>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Descripcion</ion-label>
+      <ion-textarea
+        [(ngModel)]="description"
+        placeholder="Descripcion opcional"
+        rows="4"
+        class="form-input"
+      ></ion-textarea>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Fecha de inicio</ion-label>
+      <ion-input
+        type="date"
+        [(ngModel)]="startDate"
+        class="form-input"
+      ></ion-input>
+    </div>
+
+    <div class="form-field">
+      <ion-label class="form-label" position="stacked">Fecha de vencimiento</ion-label>
+      <ion-input
+        type="date"
+        [(ngModel)]="dueDate"
+        class="form-input"
+      ></ion-input>
+    </div>
+  </div>
+</ion-content>

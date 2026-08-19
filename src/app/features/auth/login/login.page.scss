@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  justify-content: center;
+}
+
+.branding {
+  text-align: center;
+  margin-bottom: 48px;
+
+  .lighthouse-icon {
+    font-size: 48px;
+    color: var(--lh-primary-700);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--lh-text);
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--lh-text-secondary);
+  }
+}
+
+.form-group {
+  margin-bottom: 16px;
+
+  ion-item {
+    --border-radius: 8px;
+    --background: var(--lh-surface);
+    --border-color: var(--lh-border);
+    --border-width: 1px;
+    --min-height: 56px;
+
+    ion-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--lh-text-secondary);
+    }
+
+    ion-button[slot="end"] {
+      align-self: center;
+    }
+
+    ion-input {
+      font-size: 15px;
+      color: var(--lh-text);
+
+      &::placeholder {
+        color: var(--lh-text-muted);
+      }
+    }
+  }
+}
+
+.login-btn {
+  margin-top: 8px;
+  --border-radius: 8px;
+  --background: var(--lh-primary-700);
+  --background-hover: var(--lh-primary-800);
+  --color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  height: 48px;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--lh-text-secondary);
+
+  a {
+    color: var(--lh-primary-700);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
+.error-text {
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 8px;
+}

@@ -1,0 +1,37 @@
+:host{display:block;height:100%}
+.coach-layout{display:flex;flex-direction:column;height:100%}
+.coach-header{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;gap:12px;padding:0 12px;background:var(--lh-surface);border-bottom:1px solid var(--lh-border);z-index:50}
+.menu-btn{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:none;border:none;border-radius:8px;cursor:pointer;color:var(--lh-text)}
+.menu-btn ion-icon{font-size:24px}
+.menu-btn:hover{background:var(--lh-surface-muted)}
+.header-title{font-size:18px;font-weight:700;color:var(--lh-text)}
+.coach-main{flex:1;overflow:hidden;display:flex;flex-direction:column;padding-top:56px}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;display:flex;flex-direction:column;background:var(--lh-bg);border-right:1px solid var(--lh-border);z-index:200;transform:translateX(-100%);transition:transform .3s ease}
+.sidebar.open{transform:translateX(0)}
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.sidebar-backdrop.visible{opacity:1;pointer-events:auto}
+.sidebar-header{padding:24px 16px;border-bottom:1px solid var(--lh-border);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.avatar{width:48px;height:48px;border-radius:50%;background:var(--lh-primary-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-info h3{font-size:15px;font-weight:700;color:var(--lh-text);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-info p{font-size:12px;color:var(--lh-text-secondary);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.role-badge{display:inline-flex;font-size:11px;font-weight:600;padding:2px 8px;border-radius:9999px;background:var(--lh-primary-bg);color:var(--lh-primary-700);margin-top:4px}
+.close-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:none;border-radius:8px;cursor:pointer;color:var(--lh-text-secondary);flex-shrink:0}
+.close-btn ion-icon{font-size:20px}
+.close-btn:hover{background:var(--lh-surface-muted)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+.nav-item{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 16px;margin:2px 8px;border-radius:8px;font-size:14px;font-weight:500;color:var(--lh-text);text-decoration:none;background:none;border:none;cursor:pointer;font-family:inherit;width:calc(100% - 16px)}
+.nav-item ion-icon{font-size:20px;color:var(--lh-text-secondary);flex-shrink:0}
+.nav-item:hover{background:var(--lh-surface-muted)}
+.nav-item.active{background:var(--lh-primary-bg);color:var(--lh-primary-700)}
+.nav-item.active ion-icon{color:var(--lh-primary-700)}
+.logout{color:var(--lh-error)}
+.logout ion-icon{color:var(--lh-error)}
+.sidebar-footer{flex-shrink:0;border-top:1px solid var(--lh-border);padding:8px 0}
+.mobile-layout{display:flex;flex-direction:column;height:100%}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;align-items:center;height:56px;background:var(--lh-surface);border-top:1px solid var(--lh-border);z-index:100}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--lh-text-muted);font-size:10px;font-weight:500;font-family:inherit}
+.nav-btn ion-icon{font-size:22px}
+.nav-btn:active{color:var(--lh-primary-700)}
+.logout-btn{color:var(--lh-error)}
+.logout-btn:active{color:var(--lh-error)}

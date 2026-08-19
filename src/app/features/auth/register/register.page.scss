@@ -1,0 +1,27 @@
+.auth-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 24px}
+.auth-brand{text-align:center;margin-bottom:32px}
+.auth-brand .brand-icon{font-size:48px;color:var(--lh-primary-700);margin-bottom:12px}
+.auth-brand .brand-title{font-family:'Manrope',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--lh-text);margin:0 0 4px}
+.auth-brand .brand-subtitle{font-size:15px;color:var(--lh-text-secondary);margin:0}
+.step-indicator{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--lh-surface-muted);transition:background .2s ease}
+.step-dot.active{background:var(--lh-primary-700)}
+.auth-form{width:100%;max-width:400px}
+.form-group{margin-bottom:16px}
+.auth-input{--background:var(--lh-surface);--border-radius:8px;--border-color:var(--lh-border);--border-style:solid;--border-width:1px;--color:var(--lh-text);--placeholder-color:var(--lh-text-muted);--padding-start:12px;--padding-end:12px;--padding-top:12px;--padding-bottom:12px;--min-height:52px}
+.auth-input ion-icon[slot='start']{color:var(--lh-text-muted);font-size:20px;margin-right:8px}
+.auth-input ion-label{font-size:14px;color:var(--lh-text-muted)}
+.auth-input ion-button[slot="end"]{align-self:center}
+.auth-input ion-input{font-size:15px}
+.field-hint{display:block;font-size:12px;color:var(--lh-text-muted);padding:4px 12px 0}
+.password-toggle{--padding-start:4px;--padding-end:4px;--min-height:28px;margin:0}
+.password-toggle ion-icon{font-size:20px;color:var(--lh-text-muted)}
+.auth-button{--background:var(--lh-primary-700);--background-hover:var(--lh-primary-800);--border-radius:8px;--color:#ffffff;--font-weight:700;--font-size:15px;--min-height:48px;margin-top:8px;text-transform:none;letter-spacing:0}
+.auth-button-secondary{--color:var(--lh-text-secondary);--font-weight:600;--font-size:14px;--min-height:44px;text-transform:none;letter-spacing:0}
+.button-spinner{width:20px;height:20px;color:#ffffff}
+.auth-error{width:100%;max-width:400px;text-align:center;margin-top:16px}
+.auth-error ion-text{font-size:13px;font-weight:500}
+.auth-footer{margin-top:24px;text-align:center}
+.auth-footer ion-text{font-size:14px}
+.auth-link{color:var(--lh-primary-700);font-weight:600;text-decoration:none;cursor:pointer}
+.auth-link:hover{text-decoration:underline}

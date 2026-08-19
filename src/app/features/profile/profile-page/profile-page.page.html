@@ -1,0 +1,74 @@
+<ion-content [fullscreen]="true">
+  <div class="page">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        {{ user?.name?.charAt(0) ?? '?' }}
+      </div>
+      <h2>{{ user?.name }}</h2>
+      <p>{{ user?.email }}</p>
+      <span class="status-chip status-info" *ngIf="tenant">
+        {{ tenant.roles[0] || 'Miembro' }}
+      </span>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Cuenta</div>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Correo</h3>
+            <p>{{ user?.email }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="business-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Organizacion</h3>
+            <p>{{ tenant?.name ?? 'Sin organizacion' }}</p>
+          </ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Preferencias</div>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="moon-outline" slot="start"></ion-icon>
+          <ion-label>Modo oscuro</ion-label>
+          <ion-toggle
+            slot="end"
+            [checked]="darkMode"
+            (ionChange)="toggleDarkMode()"
+          ></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Acerca de</div>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="colorPaletteOutline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Version</h3>
+            <p>1.0.0</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <ion-button
+      class="logout-btn"
+      expand="block"
+      color="danger"
+      fill="outline"
+      (click)="logout()"
+    >
+      <ion-icon name="log-out-outline" slot="start"></ion-icon>
+      Cerrar sesion
+    </ion-button>
+  </div>
+</ion-content>

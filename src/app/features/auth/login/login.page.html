@@ -1,0 +1,65 @@
+<ion-content [fullscreen]="true">
+  <div class="auth-container">
+    <div class="branding">
+      <span class="lighthouse-icon">
+        <ion-icon name="flash-outline"></ion-icon>
+      </span>
+      <h1>Lighthouse</h1>
+      <p>Sistema de Gestion Educativa</p>
+    </div>
+
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <ion-item>
+          <ion-label position="floating">Correo electronico</ion-label>
+          <ion-input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            autocomplete="email"
+          ></ion-input>
+        </ion-item>
+      </div>
+
+      <div class="form-group">
+        <ion-item>
+          <ion-label position="floating">Contrasena</ion-label>
+          <ion-input
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            autocomplete="current-password"
+          ></ion-input>
+          <ion-button
+            fill="clear"
+            slot="end"
+            (click)="togglePassword(); $event.preventDefault()"
+          >
+            <ion-icon
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              slot="icon-only"
+            ></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+
+      <ion-text *ngIf="errorMessage" color="danger">
+        <p class="error-text">{{ errorMessage }}</p>
+      </ion-text>
+
+      <ion-button
+        class="login-btn"
+        expand="block"
+        type="submit"
+        [disabled]="loading"
+      >
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Iniciar Sesion</span>
+      </ion-button>
+    </form>
+
+    <div class="auth-footer">
+      <p>No tienes cuenta? <a (click)="goToRegister()">Registrate</a></p>
+    </div>
+  </div>
+</ion-content>
