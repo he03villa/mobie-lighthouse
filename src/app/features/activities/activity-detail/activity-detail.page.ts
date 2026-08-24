@@ -148,13 +148,29 @@ export class ActivityDetailPage {
 
   navigateToEvidence(): void {
     if (this.submission) {
-      this.nav.forward(`/activities/${this.submission.activity.id}/evidence`);
+      this.nav.forward(`/activities/${this.submission.activity.id}/evidence`, {
+        activity: {
+          name: this.submission.activity.name,
+          description: this.submission.activity.description,
+          type: this.submission.activity.type,
+        },
+        moduleName: this.submission.enrollment.program?.name ?? '',
+        enrollmentId: this.submission.enrollment.id,
+      });
     }
   }
 
   navigateToEdit(): void {
     if (this.submission) {
-      this.nav.forward(`/activities/${this.submission.activity.id}/evidence`);
+      this.nav.forward(`/activities/${this.submission.activity.id}/evidence`, {
+        activity: {
+          name: this.submission.activity.name,
+          description: this.submission.activity.description,
+          type: this.submission.activity.type,
+        },
+        moduleName: this.submission.enrollment.program?.name ?? '',
+        enrollmentId: this.submission.enrollment.id,
+      });
     }
   }
 }

@@ -1,63 +1,96 @@
 <ion-content [fullscreen]="true">
-  <div class="auth-container">
-    <div class="branding">
-      <span class="lighthouse-icon">
-        <ion-icon name="flash-outline"></ion-icon>
-      </span>
-      <h1>Lighthouse</h1>
-      <p>Sistema de Gestion Educativa</p>
+  <div class="login-page">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="brand-icon-wrap">
+          <ion-icon name="flash-outline" class="brand-icon"></ion-icon>
+        </div>
+        <h1 class="brand-name">Lighthouse</h1>
+        <p class="brand-tagline">Sistema de Gestion Educativa</p>
+      </div>
     </div>
 
-    <form (ngSubmit)="login()">
-      <div class="form-group">
-        <ion-item>
-          <ion-label position="floating">Correo electronico</ion-label>
-          <ion-input
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            autocomplete="email"
-          ></ion-input>
-        </ion-item>
+    <!-- Form Card -->
+    <div class="form-card">
+      <h2 class="form-card__title">Bienvenido de vuelta</h2>
+      <p class="form-card__subtitle">Ingresa tus credenciales para continuar</p>
+
+      <form (ngSubmit)="login()">
+        <div class="lh-field">
+          <label class="lh-field__label">Correo electronico</label>
+          <div class="lh-field__control">
+            <ion-input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              autocomplete="email"
+              placeholder="tu@email.com"
+            ></ion-input>
+          </div>
+        </div>
+
+        <div class="lh-field">
+          <label class="lh-field__label">Contrasena</label>
+          <div class="lh-field__control">
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              autocomplete="current-password"
+              placeholder="Minimo 8 caracteres"
+            ></ion-input>
+            <button
+              class="password-toggle"
+              type="button"
+              (click)="togglePassword(); $event.stopPropagation()"
+              tabindex="-1"
+            >
+              <ion-icon
+                [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              ></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-banner">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <button class="login-btn" type="submit" [disabled]="loading">
+          @if (loading) {
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Iniciando sesion...</span>
+          } @else {
+            <span>Iniciar Sesion</span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          }
+        </button>
+      </form>
+
+      <!--
+      <div class="divider">
+        <span>o</span>
       </div>
 
-      <div class="form-group">
-        <ion-item>
-          <ion-label position="floating">Contrasena</ion-label>
-          <ion-input
-            [type]="showPassword ? 'text' : 'password'"
-            [(ngModel)]="password"
-            name="password"
-            autocomplete="current-password"
-          ></ion-input>
-          <ion-button
-            fill="clear"
-            slot="end"
-            (click)="togglePassword(); $event.preventDefault()"
-          >
-            <ion-icon
-              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
-              slot="icon-only"
-            ></ion-icon>
-          </ion-button>
-        </ion-item>
+      <div class="social-row">
+        <button class="social-btn" type="button">
+          <ion-icon name="logo-google"></ion-icon>
+          <span>Google</span>
+        </button>
+        <button class="social-btn" type="button">
+          <ion-icon name="logo-apple"></ion-icon>
+          <span>Apple</span>
+        </button>
       </div>
+      -->
+    </div>
 
-      <ion-text *ngIf="errorMessage" color="danger">
-        <p class="error-text">{{ errorMessage }}</p>
-      </ion-text>
-
-      <ion-button
-        class="login-btn"
-        expand="block"
-        type="submit"
-        [disabled]="loading"
-      >
-        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
-        <span *ngIf="!loading">Iniciar Sesion</span>
-      </ion-button>
-    </form>
-
+    <!-- Footer -->
     <div class="auth-footer">
       <p>No tienes cuenta? <a (click)="goToRegister()">Registrate</a></p>
     </div>

@@ -15,42 +15,57 @@
 
 <ion-content [fullscreen]="true">
   <div class="page">
-    <div class="form-field">
-      <ion-label class="form-label" position="stacked">Contenido</ion-label>
-      <ion-textarea
-        [(ngModel)]="content"
-        placeholder="Escribe tu entrada del diario..."
-        rows="8"
-        class="form-input"
-      ></ion-textarea>
+    <div class="lh-field">
+      <label class="lh-field__label">Contenido</label>
+      <div class="lh-field__control">
+        <ion-textarea
+          [(ngModel)]="content"
+          placeholder="Escribe tu entrada del diario..."
+          rows="8"
+        ></ion-textarea>
+      </div>
     </div>
 
-    <div class="form-field">
-      <ion-label class="form-label" position="stacked">Visibilidad</ion-label>
-      <ion-select [(ngModel)]="visibility" class="form-input">
-        <ion-select-option value="private">Privada</ion-select-option>
-        <ion-select-option value="shared_family">Compartida con la familia</ion-select-option>
-        <ion-select-option value="shared_participant">Compartida con el participante</ion-select-option>
-        <ion-select-option value="public">Publica</ion-select-option>
-      </ion-select>
+    <div class="lh-field">
+      <label class="lh-field__label">Visibilidad</label>
+      <div class="lh-field__control">
+        <ion-select [(ngModel)]="visibility">
+          <ion-select-option value="private">Privada</ion-select-option>
+          <ion-select-option value="shared_family">Compartida con la familia</ion-select-option>
+          <ion-select-option value="shared_participant">Compartida con el participante</ion-select-option>
+          <ion-select-option value="public">Publica</ion-select-option>
+        </ion-select>
+      </div>
     </div>
 
-    <div class="form-field">
-      <ion-label class="form-label" position="stacked">Fecha</ion-label>
-      <ion-input
-        type="date"
-        [(ngModel)]="entryDate"
-        class="form-input"
-      ></ion-input>
+    <div class="lh-field">
+      <label class="lh-field__label">Fecha</label>
+      <div class="lh-field__control">
+        <ion-input
+          type="date"
+          [(ngModel)]="entryDate"
+        ></ion-input>
+      </div>
     </div>
 
-    <div class="form-field">
-      <ion-label class="form-label" position="stacked">ID del participante (opcional)</ion-label>
-      <ion-input
-        [(ngModel)]="participantId"
-        placeholder="UUID del participante"
-        class="form-input"
-      ></ion-input>
+    <div class="lh-field">
+      <label class="lh-field__label">ID del participante (opcional)</label>
+      <div class="lh-field__control">
+        <ion-input
+          [(ngModel)]="participantId"
+          placeholder="UUID del participante"
+        ></ion-input>
+      </div>
     </div>
+
+    <ion-button
+      expand="block"
+      class="save-btn"
+      (click)="save()"
+      [disabled]="loading || !content.trim()"
+    >
+      <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
+      {{ isEdit ? 'Actualizar entrada' : 'Crear entrada' }}
+    </ion-button>
   </div>
 </ion-content>

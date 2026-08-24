@@ -99,3 +99,107 @@
   --border-radius: 8px;
   font-weight: 600;
 }
+
+.gamification-section {
+  padding: 0 16px 8px;
+}
+
+.level-bar {
+  background: var(--lh-surface);
+  border: 1.5px solid var(--lh-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.level-bar__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.level-bar__level {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--lh-text);
+}
+
+.level-bar__xp {
+  font-size: 12px;
+  color: var(--lh-text-secondary);
+}
+
+.level-bar__track {
+  height: 6px;
+  background: var(--lh-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.level-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.streak-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--lh-surface);
+  border: 1.5px solid var(--lh-border);
+  border-radius: 12px;
+}
+
+.streak-display__icon {
+  font-size: 20px;
+}
+
+.streak-display__count {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f97316;
+}
+
+.streak-display__label {
+  font-size: 13px;
+  color: var(--lh-text-secondary);
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: var(--lh-surface);
+  border: 1.5px solid var(--lh-border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.badge-item--locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.badge-item__icon {
+  font-size: 28px;
+}
+
+.badge-item__name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--lh-text);
+  line-height: 1.2;
+}

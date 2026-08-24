@@ -1,16 +1,14 @@
-ion-item {
-  --background: transparent;
-  --border-radius: 8px;
-  margin-bottom: 8px;
+:host { display: block; }
+
+.page {
+  padding: 16px;
 }
 
-ion-input,
-ion-textarea,
-ion-select {
-  --color: var(--lh-text);
-  --placeholder-color: var(--lh-text-muted);
-}
-
-ion-textarea {
-  --background: transparent;
+.save-btn {
+  margin-top: 24px;
+  --background: var(--lh-primary-700);
+  --border-radius: 14px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 15px;
 }

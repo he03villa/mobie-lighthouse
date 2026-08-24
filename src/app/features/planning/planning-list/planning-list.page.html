@@ -11,33 +11,63 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-loading-spinner *ngIf="loading" message="Cargando tableros..."></app-loading-spinner>
-
-  <ng-container *ngIf="!loading">
-    <app-empty-state
-      *ngIf="boards.length === 0"
-      icon="calendar-outline"
-      title="Sin tableros"
-      subtitle="Crea tu primer tablero de planificacion"
-    ></app-empty-state>
-
-    <ion-list *ngIf="boards.length > 0">
-      <ion-item
-        *ngFor="let board of boards"
-        class="board-item"
-        (click)="navigateToBoard(board.id)"
-        button
-        detail
-      >
-        <ion-icon slot="start" name="calendar-outline" class="board-icon"></ion-icon>
-        <ion-label>
-          <h3 class="board-name">{{ board.name }}</h3>
-          <div class="board-meta">
-            <span>{{ board.columns_count || 0 }} columnas</span>
-            <span> · {{ board.tasks_count || 0 }} tareas</span>
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando tableros..."></app-loading-spinner>
+    } @else if (boards.length === 0) {
+      <app-empty-state
+        icon="calendar-outline"
+        title="Sin tableros"
+        subtitle="Toca + para crear tu primer tablero"
+      ></app-empty-state>
+    } @else {
+      @for (board of boards; track board.id) {
+        <div class="board-card" (click)="navigateToBoard(board.id)">
+          <div class="board-card__header">
+            <div class="board-card__icon">
+              <ion-icon name="calendar-outline"></ion-icon>
+            </div>
+            <div class="board-card__info">
+              <h3 class="board-card__name">{{ board.name }}</h3>
+              @if (board.description) {
+                <p class="board-card__desc">{{ board.description }}</p>
+              }
+            </div>
+            <ion-icon name="chevron-forward-outline" class="board-card__chevron"></ion-icon>
           </div>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-  </ng-container>
+
+          @if (board.columns && board.columns.length > 0) {
+            <div class="mini-kanban">
+              @for (col of board.columns; track col.id) {
+                <div class="mini-col">
+                  <span class="mini-col__name">{{ col.name }}</span>
+                  <span class="mini-col__count">{{ col.tasks_count ?? col.tasks?.length ?? 0 }}</span>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="board-card__footer">
+            <span class="board-card__stat">
+              <ion-icon name="layers-outline"></ion-icon>
+              {{ board.columns_count ?? board.columns?.length ?? 0 }} columnas
+            </span>
+            <span class="board-card__stat">
+              <ion-icon name="reorder-three-outline"></ion-icon>
+              {{ board.tasks_count ?? 0 }} tareas
+            </span>
+            @if (board.created_at) {
+              <span class="board-card__date">{{ formatRelativeDate(board.created_at) }}</span>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <ion-fab *ngIf="isCoach" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="createBoard()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

@@ -19,35 +19,45 @@
       <section class="form-section">
         <h3 class="section-title">Datos del Programa</h3>
 
-        <ion-item>
-          <ion-label position="floating">Nombre *</ion-label>
-          <ion-input [(ngModel)]="name" name="name"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Descripcion</ion-label>
-          <ion-textarea [(ngModel)]="description" name="description" rows="3"></ion-textarea>
-        </ion-item>
-
-        <div class="field-row">
-          <ion-item class="half">
-            <ion-label position="floating">Grupo de edad</ion-label>
-            <ion-input [(ngModel)]="ageGroup" name="ageGroup"></ion-input>
-          </ion-item>
-
-          <ion-item class="half">
-            <ion-label position="floating">Duracion (semanas)</ion-label>
-            <ion-input [(ngModel)]="durationWeeks" name="durationWeeks" type="number"></ion-input>
-          </ion-item>
+        <div class="lh-field">
+          <label class="lh-field__label">Nombre <span class="lh-field__required">*</span></label>
+          <div class="lh-field__control">
+            <ion-input [(ngModel)]="name" name="name" placeholder="Nombre del programa"></ion-input>
+          </div>
         </div>
 
-        <ion-item>
-          <ion-label>
-            <h3>Publicar</h3>
-            <p>Visible para participantes</p>
-          </ion-label>
-          <ion-toggle [(ngModel)]="isPublished" slot="end"></ion-toggle>
-        </ion-item>
+        <div class="lh-field">
+          <label class="lh-field__label">Descripcion</label>
+          <div class="lh-field__control">
+            <ion-textarea [(ngModel)]="description" name="description" rows="3" placeholder="Descripcion del programa"></ion-textarea>
+          </div>
+        </div>
+
+        <div class="lh-field-row">
+          <div class="lh-field">
+            <label class="lh-field__label">Grupo de edad</label>
+            <div class="lh-field__control">
+              <ion-input [(ngModel)]="ageGroup" name="ageGroup" placeholder="Ej. 6-12"></ion-input>
+            </div>
+          </div>
+
+          <div class="lh-field">
+            <label class="lh-field__label">Duracion (semanas)</label>
+            <div class="lh-field__control">
+              <ion-input [(ngModel)]="durationWeeks" name="durationWeeks" type="number" placeholder="12"></ion-input>
+            </div>
+          </div>
+        </div>
+
+        <div class="lh-field">
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-title">Publicar</span>
+              <span class="toggle-subtitle">Visible para participantes</span>
+            </div>
+            <ion-toggle [(ngModel)]="isPublished" slot="end"></ion-toggle>
+          </div>
+        </div>
       </section>
 
       <!-- Thumbnail -->
@@ -100,20 +110,26 @@
 
             @if (mod.expanded) {
               <ion-card-content>
-                <ion-item>
-                  <ion-label position="floating">Nombre del modulo *</ion-label>
-                  <ion-input [(ngModel)]="mod.name" [name]="'mod-name-' + i"></ion-input>
-                </ion-item>
+                <div class="lh-field">
+                  <label class="lh-field__label">Nombre del modulo <span class="lh-field__required">*</span></label>
+                  <div class="lh-field__control">
+                    <ion-input [(ngModel)]="mod.name" [name]="'mod-name-' + i" placeholder="Nombre del modulo"></ion-input>
+                  </div>
+                </div>
 
-                <ion-item>
-                  <ion-label position="floating">Descripcion del modulo</ion-label>
-                  <ion-textarea [(ngModel)]="mod.description" [name]="'mod-desc-' + i" rows="2"></ion-textarea>
-                </ion-item>
+                <div class="lh-field">
+                  <label class="lh-field__label">Descripcion del modulo</label>
+                  <div class="lh-field__control">
+                    <ion-textarea [(ngModel)]="mod.description" [name]="'mod-desc-' + i" rows="2" placeholder="Descripcion opcional"></ion-textarea>
+                  </div>
+                </div>
 
-                <ion-item>
-                  <ion-label position="floating">Orden</ion-label>
-                  <ion-input [(ngModel)]="mod.order" [name]="'mod-order-' + i" type="number"></ion-input>
-                </ion-item>
+                <div class="lh-field">
+                  <label class="lh-field__label">Orden</label>
+                  <div class="lh-field__control">
+                    <ion-input [(ngModel)]="mod.order" [name]="'mod-order-' + i" type="number" placeholder="1"></ion-input>
+                  </div>
+                </div>
 
                 <!-- Activities -->
                 <div class="activities-section">
@@ -129,33 +145,40 @@
                     <div class="activity-card">
                       <div class="activity-row">
                         <div class="activity-fields">
-                          <ion-item>
-                            <ion-label position="floating">Nombre *</ion-label>
-                            <ion-input [(ngModel)]="act.name" [name]="'act-name-' + i + '-' + j"></ion-input>
-                          </ion-item>
-
-                          <ion-item>
-                            <ion-label position="floating">Descripcion</ion-label>
-                            <ion-textarea [(ngModel)]="act.description" [name]="'act-desc-' + i + '-' + j" rows="2"></ion-textarea>
-                          </ion-item>
-
-                          <div class="field-row">
-                            <ion-item class="half">
-                              <ion-label position="floating">Tipo</ion-label>
-                              <ion-select [(ngModel)]="act.type" [name]="'act-type-' + i + '-' + j" interface="popover">
-                                @for (t of activityTypes; track t.value) {
-                                  <ion-select-option [value]="t.value">{{ t.label }}</ion-select-option>
-                                }
-                              </ion-select>
-                            </ion-item>
-
-                            <ion-item class="half">
-                              <ion-label position="floating">Orden</ion-label>
-                              <ion-input [(ngModel)]="act.order" [name]="'act-order-' + i + '-' + j" type="number"></ion-input>
-                            </ion-item>
+                          <div class="lh-field">
+                            <label class="lh-field__label">Nombre <span class="lh-field__required">*</span></label>
+                            <div class="lh-field__control">
+                              <ion-input [(ngModel)]="act.name" [name]="'act-name-' + i + '-' + j" placeholder="Nombre de la actividad"></ion-input>
+                            </div>
                           </div>
 
+                          <div class="lh-field">
+                            <label class="lh-field__label">Descripcion</label>
+                            <div class="lh-field__control">
+                              <ion-textarea [(ngModel)]="act.description" [name]="'act-desc-' + i + '-' + j" rows="2" placeholder="Descripcion"></ion-textarea>
+                            </div>
                           </div>
+
+                          <div class="lh-field-row">
+                            <div class="lh-field">
+                              <label class="lh-field__label">Tipo</label>
+                              <div class="lh-field__control">
+                                <ion-select [(ngModel)]="act.type" [name]="'act-type-' + i + '-' + j" interface="popover">
+                                  @for (t of activityTypes; track t.value) {
+                                    <ion-select-option [value]="t.value">{{ t.label }}</ion-select-option>
+                                  }
+                                </ion-select>
+                              </div>
+                            </div>
+
+                            <div class="lh-field">
+                              <label class="lh-field__label">Orden</label>
+                              <div class="lh-field__control">
+                                <ion-input [(ngModel)]="act.order" [name]="'act-order-' + i + '-' + j" type="number" placeholder="1"></ion-input>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
                         <ion-button fill="clear" color="danger" size="small" (click)="removeActivity(i, j)">
                           <ion-icon name="trash-outline" slot="icon-only"></ion-icon>

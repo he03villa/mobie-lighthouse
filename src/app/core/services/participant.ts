@@ -16,6 +16,10 @@ export class ParticipantService {
     return firstValueFrom(this.api.get<ApiResponse<Participant[]>>(`/${BASE}`)).then(res => res.data);
   }
 
+  myParticipantsAsync(): Promise<Participant[]> {
+    return firstValueFrom(this.api.get<ApiResponse<Participant[]>>(`/my/participants`)).then(res => res.data);
+  }
+
   getAsync(id: string): Promise<Participant> {
     return firstValueFrom(this.api.get<ApiResponse<Participant>>(`/${BASE}/${id}`)).then(res => res.data);
   }

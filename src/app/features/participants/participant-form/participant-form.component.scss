@@ -1,10 +1,91 @@
-ion-item {
-  --background: transparent;
-  --border-radius: 8px;
-  margin-bottom: 8px;
+.section-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; color: var(--lh-text); margin: 0 0 4px; }
+.section-help { font-size: 13px; color: var(--lh-text-secondary); margin: 0 0 16px; }
+.empty-hint { font-size: 14px; color: var(--lh-text-muted); margin: 0 0 16px; }
+
+.guardian-card {
+  border: 1px solid var(--lh-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
 
-ion-input {
-  --color: var(--lh-text);
-  --placeholder-color: var(--lh-text-muted);
+.guardian-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.guardian-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--lh-primary-bg);
+  color: var(--lh-primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.guardian-card-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lh-text);
+}
+
+.guardian-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--lh-text-muted);
+
+  ion-icon { font-size: 18px; }
+
+  &:active { color: var(--lh-error); }
+}
+
+.guardian-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: 2px dashed var(--lh-border);
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  color: var(--lh-primary-700);
+  font-size: 14px;
+  font-weight: 600;
+
+  ion-icon { font-size: 20px; }
+
+  &:active { background: var(--lh-surface-muted); }
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--lh-text);
+}
+
+.save-bar {
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: var(--lh-surface);
+  border-top: 1px solid var(--lh-border);
 }

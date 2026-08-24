@@ -12,66 +12,153 @@
   </ion-header>
 
   <div class="page">
-    <ion-searchbar
-      placeholder="Buscar programas..."
-      [debounce]="300"
-      (ionInput)="searchTerm = $any($event).detail.value!.toLowerCase()"
-    ></ion-searchbar>
+    <!-- Search + Filter -->
+    <div class="search-row">
+      <ion-searchbar
+        class="searchbar-premium"
+        placeholder="Buscar programas..."
+        [debounce]="300"
+        (ionInput)="onSearch($any($event).detail.value!)"
+      ></ion-searchbar>
+    </div>
+
+    <ion-segment [value]="filter" (ionChange)="onFilterChange($any($event).detail.value)" class="filter-segment">
+      <ion-segment-button value="all">Todos</ion-segment-button>
+      <ion-segment-button value="published">Publicados</ion-segment-button>
+      <ion-segment-button value="draft">Borradores</ion-segment-button>
+    </ion-segment>
 
     @if (loading) {
       <app-loading-spinner message="Cargando programas..."></app-loading-spinner>
-    } @else if (programs.length === 0) {
-      <app-empty-state
-        icon="school-outline"
-        title="Sin programas"
-        subtitle="Crea tu primer programa para comenzar"
-      >
-        <ion-button fill="outline" (click)="navigateToCreate()">
-          <ion-icon name="add-outline" slot="start"></ion-icon>
-          Crear programa
-        </ion-button>
-      </app-empty-state>
-    } @else {
-      <ion-list>
-        @for (program of programs; track program.id) {
-          @if (!searchTerm || program.name.toLowerCase().includes(searchTerm) || (program.description && program.description.toLowerCase().includes(searchTerm))) {
-            <ion-item
-              button
-              detail="false"
-              (click)="navigateToDetail(program.id)"
-              class="program-item"
-            >
-              <ion-icon name="school-outline" slot="start"></ion-icon>
-              <ion-label>
-                <h2>{{ program.name }}</h2>
-                @if (program.description) {
-                  <p>{{ program.description | slice:0:80 }}{{ program.description.length > 80 ? '...' : '' }}</p>
-                }
-                <p class="program-meta text-muted">
-                  @if (program.modules) {
-                    {{ program.modules.length }} {{ program.modules.length === 1 ? 'módulo' : 'módulos' }}
-                  }
-                  @if (program.duration_weeks) {
-                    · {{ program.duration_weeks }} semanas
-                  }
-                </p>
-              </ion-label>
-              @if (program.is_published) {
-                <ion-chip color="success" slot="end">
-                  <ion-icon name="checkmark-circle-outline"></ion-icon>
-                  Publicado
-                </ion-chip>
-              } @else {
-                <ion-chip color="medium" slot="end">
-                  <ion-icon name="time-outline"></ion-icon>
-                  Borrador
-                </ion-chip>
-              }
-              <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
-            </ion-item>
-          }
+    } @else if (!hasResults) {
+      <div class="empty-wrap">
+        @if (searchTerm || filter !== 'all') {
+          <app-empty-state
+            icon="search-outline"
+            title="Sin resultados"
+            subtitle="No se encontraron programas con los filtros actuales"
+          >
+            <ion-button fill="clear" (click)="clearSearch(); filter = 'all'">
+              Limpiar filtros
+            </ion-button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state
+            icon="school-outline"
+            title="Sin programas"
+            subtitle="Crea tu primer programa para comenzar"
+          >
+            <ion-button fill="outline" (click)="navigateToCreate()">
+              <ion-icon name="add-outline" slot="start"></ion-icon>
+              Crear programa
+            </ion-button>
+          </app-empty-state>
         }
-      </ion-list>
+      </div>
+    } @else {
+      <!-- Featured Card -->
+      @if (featured) {
+        <div class="featured-card" (click)="navigateToDetail(featured.id)">
+          @if (featured.thumbnail) {
+            <img class="featured-card__bg" [src]="featured.thumbnail" alt="" />
+          } @else {
+            <div class="featured-card__bg featured-card__bg--gradient"></div>
+          }
+          <div class="featured-card__overlay"></div>
+          <div class="featured-card__content">
+            <div class="featured-card__badge" [class.badge--published]="featured.is_published">
+              @if (featured.is_published) {
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                Publicado
+              } @else {
+                <ion-icon name="hourglass-outline"></ion-icon>
+                Borrador
+              }
+            </div>
+            <h2 class="featured-card__name">{{ featured.name }}</h2>
+            @if (featured.description) {
+              <p class="featured-card__desc">{{ featured.description }}</p>
+            }
+            <div class="featured-card__meta">
+              @if (featured.duration_weeks) {
+                <span class="meta-item">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{ featured.duration_weeks }} sem
+                </span>
+              }
+              @if (featured.modules) {
+                <span class="meta-item">
+                  <ion-icon name="layers-outline"></ion-icon>
+                  {{ moduleCount(featured) }} {{ moduleCount(featured) === 1 ? 'modulo' : 'modulos' }}
+                </span>
+              }
+              @if (featured.age_group) {
+                <span class="meta-item">
+                  {{ featured.age_group }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Grid -->
+      @if (rest.length > 0) {
+        <div class="section-header">
+          <span class="section-label">
+            @if (filter === 'published') {
+              Publicados
+            } @else if (filter === 'draft') {
+              Borradores
+            } @else {
+              Todos los programas
+            }
+          </span>
+          <span class="section-count">{{ filtered.length }}</span>
+        </div>
+
+        <div class="program-grid">
+          @for (program of rest; track program.id) {
+            <div class="program-card" (click)="navigateToDetail(program.id)">
+              <div class="program-card__thumb">
+                @if (program.thumbnail) {
+                  <img [src]="program.thumbnail" [alt]="program.name" />
+                } @else {
+                  <div class="program-card__thumb-fallback">
+                    <ion-icon name="school-outline"></ion-icon>
+                  </div>
+                }
+                @if (program.is_published) {
+                  <span class="program-card__dot"></span>
+                }
+              </div>
+              <div class="program-card__body">
+                <h3 class="program-card__name">{{ program.name }}</h3>
+                <div class="program-card__meta">
+                  @if (program.duration_weeks) {
+                    <span>{{ program.duration_weeks }} sem</span>
+                  }
+                  @if (program.modules) {
+                    <span>{{ moduleCount(program) }} mod</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (filtered.length === 1) {
+        <!-- Only featured, no rest -->
+        <div class="section-header">
+          <span class="section-label">Programas</span>
+          <span class="section-count">1</span>
+        </div>
+      }
     }
   </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="navigateToCreate()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

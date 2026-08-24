@@ -9,61 +9,217 @@
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card surface-panel">
-        <div class="stat-icon">
-          <ion-icon name="people-outline"></ion-icon>
+    <!-- COACH DASHBOARD -->
+    <ng-container *ngIf="isCoach">
+      <div class="stats-grid">
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="people-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.participants }}</div>
+          <div class="stat-label">Participantes</div>
         </div>
-        <div class="stat-value">{{ stats.participants }}</div>
-        <div class="stat-label">Participantes</div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="school-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.programs }}</div>
+          <div class="stat-label">Programas</div>
+        </div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.submissions }}</div>
+          <div class="stat-label">Evidencias</div>
+        </div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.pending }}</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
       </div>
 
-      <div class="stat-card surface-panel">
-        <div class="stat-icon">
-          <ion-icon name="school-outline"></ion-icon>
-        </div>
-        <div class="stat-value">{{ stats.programs }}</div>
-        <div class="stat-label">Programas</div>
+      <h2 class="section-title">Acciones rapidas</h2>
+      <div class="quick-actions">
+        <ion-button expand="block" (click)="navigateTo('/participants/new')">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Nuevo participante
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/programs')">
+          <ion-icon name="school-outline" slot="start"></ion-icon>
+          Mis programas
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/field-notes')">
+          <ion-icon name="document-text-outline" slot="start"></ion-icon>
+          Notas de campo
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/planning')">
+          <ion-icon name="trending-up-outline" slot="start"></ion-icon>
+          Planificacion
+        </ion-button>
       </div>
 
-      <div class="stat-card surface-panel">
-        <div class="stat-icon">
-          <ion-icon name="document-text-outline"></ion-icon>
+      <h2 class="section-title">Mis participantes</h2>
+      <div *ngIf="participants.length === 0" class="empty-wrap">
+        <app-empty-state
+          icon="people-outline"
+          title="Sin participantes"
+          subtitle="Agrega tu primer participante para comenzar"
+        >
+          <ion-button fill="outline" (click)="navigateTo('/participants/new')">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Agregar
+          </ion-button>
+        </app-empty-state>
+      </div>
+      <div *ngIf="participants.length > 0" class="participant-grid">
+        <div class="participant-card" *ngFor="let p of participants" (click)="navigateTo('/participants/' + p.id)">
+          <div class="participant-card__avatar">
+            <span class="participant-card__initials">{{ initials(p) }}</span>
+          </div>
+          <div class="participant-card__body">
+            <h3 class="participant-card__name">{{ p.first_name }} {{ p.last_name }}</h3>
+          </div>
         </div>
-        <div class="stat-value">{{ stats.submissions }}</div>
-        <div class="stat-label">Actividades recientes</div>
+      </div>
+    </ng-container>
+
+    <!-- PARTICIPANT DASHBOARD -->
+    <ng-container *ngIf="isParticipantUser">
+      <div class="goal-ring-section">
+        <div class="goal-ring" [class.goal-ring--met]="dailyGoalMet">
+          <svg viewBox="0 0 36 36" class="goal-ring__svg">
+            <path class="goal-ring__bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="2.5" />
+            <path class="goal-ring__fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="2.5"
+              [style.stroke-dasharray]="dailyGoalMet ? '100, 100' : '0, 100'" />
+          </svg>
+          <div class="goal-ring__center">
+            <span class="goal-ring__icon">{{ dailyGoalMet ? '✓' : '🎯' }}</span>
+          </div>
+        </div>
+        <div class="goal-ring__info">
+          <h3 class="goal-ring__title">Meta diaria</h3>
+          <p class="goal-ring__subtitle">{{ dailyGoalMet ? '¡Completada!' : 'Completa 1 actividad hoy' }}</p>
+          @if (streakCount > 0) {
+            <span class="goal-ring__streak">🔥 {{ streakCount }} dias seguidos</span>
+          }
+        </div>
       </div>
 
-      <div class="stat-card surface-panel">
-        <div class="stat-icon">
-          <ion-icon name="wallet-outline"></ion-icon>
+      <div class="stats-grid">
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="school-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.programs }}</div>
+          <div class="stat-label">Mis programas</div>
         </div>
-        <div class="stat-value">{{ stats.pending }}</div>
-        <div class="stat-label">Pendientes</div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.submissions }}</div>
+          <div class="stat-label">Actividades</div>
+        </div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.pending }}</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="ribbon-outline"></ion-icon>
+          </div>
+          <div class="stat-value">0%</div>
+          <div class="stat-label">Progreso</div>
+        </div>
       </div>
-    </div>
 
-    <h2 class="section-title">Acciones rapidas</h2>
-    <div class="quick-actions">
-      <ion-button expand="block" (click)="navController.navigateForward('/activities/new')">
-        <ion-icon name="add-outline" slot="start"></ion-icon>
-        Nueva actividad
-      </ion-button>
-      <ion-button expand="block" fill="outline" (click)="navController.navigateForward('/journal')">
-        <ion-icon name="calendar-outline" slot="start"></ion-icon>
-        Ver diario
-      </ion-button>
-      <ion-button expand="block" fill="outline" (click)="navController.navigateForward('/planning')">
-        <ion-icon name="trending-up-outline" slot="start"></ion-icon>
-        Planificacion
-      </ion-button>
-    </div>
+      <h2 class="section-title">Acciones rapidas</h2>
+      <div class="quick-actions">
+        <ion-button expand="block" (click)="navigateTo('/activities')">
+          <ion-icon name="finger-print-outline" slot="start"></ion-icon>
+          Mis actividades
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/journal')">
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          Mi diario
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/programs')">
+          <ion-icon name="school-outline" slot="start"></ion-icon>
+          Mis programas
+        </ion-button>
+      </div>
 
-    <h2 class="section-title">Actividad reciente</h2>
-    <app-empty-state
-      icon="document-text-outline"
-      title="Sin actividad reciente"
-      subtitle="Las actividades que registres aparecerán aquí"
-    ></app-empty-state>
+      <h2 class="section-title">Actividad reciente</h2>
+      <app-empty-state
+        icon="document-text-outline"
+        title="Sin actividad reciente"
+        subtitle="Tus actividades aparecerán aquí"
+      ></app-empty-state>
+    </ng-container>
+
+    <!-- PARENT DASHBOARD -->
+    <ng-container *ngIf="isParentUser">
+      <div class="stats-grid">
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="people-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ participants.length }}</div>
+          <div class="stat-label">Mis hijos</div>
+        </div>
+
+        <div class="stat-card surface-panel">
+          <div class="stat-icon">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <div class="stat-value">{{ stats.pending }}</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Mis hijos</h2>
+      <div *ngIf="participants.length === 0" class="empty-wrap">
+        <app-empty-state
+          icon="people-outline"
+          title="Sin participantes"
+          subtitle="Aún no tienes hijos registrados"
+        ></app-empty-state>
+      </div>
+      <div *ngIf="participants.length > 0" class="participant-grid">
+        <div class="participant-card" *ngFor="let p of participants" (click)="navigateTo('/participants/' + p.id)">
+          <div class="participant-card__avatar">
+            <span class="participant-card__initials">{{ initials(p) }}</span>
+          </div>
+          <div class="participant-card__body">
+            <h3 class="participant-card__name">{{ p.first_name }} {{ p.last_name }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Acciones rapidas</h2>
+      <div class="quick-actions">
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/journal')">
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          Ver diario
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/programs')">
+          <ion-icon name="school-outline" slot="start"></ion-icon>
+          Programas
+        </ion-button>
+      </div>
+    </ng-container>
   </div>
 </ion-content>

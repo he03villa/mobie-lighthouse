@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -9,12 +10,14 @@ import {
   IonBackButton,
   IonButtons,
   IonButton,
-  IonItem,
-  IonLabel,
   IonInput,
+  IonCheckbox,
   IonSpinner,
+  IonIcon,
+  IonFooter,
 } from '@ionic/angular/standalone';
-import { ActivatedRoute } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { personAddOutline, closeOutline } from 'ionicons/icons';
 import { ParticipantService } from '../../../core/services/participant';
 import { Participant } from '../../../core/models/participant';
 import { NavigationService } from '../../../core/services/navigation';
@@ -27,7 +30,7 @@ import { ToastService } from '../../../core/services/toast';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     IonContent,
     IonHeader,
     IonToolbar,
@@ -35,26 +38,37 @@ import { ToastService } from '../../../core/services/toast';
     IonBackButton,
     IonButtons,
     IonButton,
-    IonItem,
-    IonLabel,
     IonInput,
+    IonCheckbox,
     IonSpinner,
+    IonIcon,
+    IonFooter,
   ],
 })
 export class ParticipantFormComponent {
   private route = inject(ActivatedRoute) as ActivatedRoute;
+  private fb = inject(FormBuilder);
   private participantService = inject(ParticipantService);
   private nav = inject(NavigationService);
   private toast = inject(ToastService);
 
   participantId: string | null = null;
   isEdit = false;
-  firstName = '';
-  lastName = '';
-  birthDate = '';
   loading = false;
 
+  form = this.fb.nonNullable.group({
+    first_name: ['', [Validators.required]],
+    last_name: ['', [Validators.required]],
+    birth_date: [''],
+    guardians: this.fb.array([]),
+  });
+
+  get guardians(): FormArray {
+    return this.form.controls.guardians;
+  }
+
   constructor() {
+    addIcons({ personAddOutline, closeOutline });
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
       this.participantId = id;
@@ -68,9 +82,11 @@ export class ParticipantFormComponent {
     this.loading = true;
     try {
       const participant: Participant = await this.participantService.getAsync(this.participantId);
-      this.firstName = participant.first_name;
-      this.lastName = participant.last_name;
-      this.birthDate = participant.birth_date ?? '';
+      this.form.patchValue({
+        first_name: participant.first_name,
+        last_name: participant.last_name,
+        birth_date: participant.birth_date ?? '',
+      });
     } catch {
       await this.toast.show('Error al cargar participante');
       this.nav.back();
@@ -79,18 +95,37 @@ export class ParticipantFormComponent {
     }
   }
 
+  addGuardian(): void {
+    this.guardians.push(
+      this.fb.nonNullable.group({
+        name: [''],
+        email: ['', [Validators.required, Validators.email]],
+        relationship: [''],
+        is_primary: [false],
+      }),
+    );
+  }
+
+  removeGuardian(index: number): void {
+    this.guardians.removeAt(index);
+  }
+
+  guardianAt(index: number): FormGroup {
+    return this.guardians.at(index) as FormGroup;
+  }
+
   async save(): Promise<void> {
-    if (!this.firstName.trim() || !this.lastName.trim()) {
-      await this.toast.show('Nombre y apellido son requeridos', 'warning');
-      return;
-    }
+    this.form.markAllAsTouched();
+    if (this.form.invalid) return;
 
     this.loading = true;
     try {
+      const { first_name, last_name, birth_date } = this.form.value;
       const data = {
-        first_name: this.firstName.trim(),
-        last_name: this.lastName.trim(),
-        birth_date: this.birthDate || null,
+        first_name: first_name!.trim(),
+        last_name: last_name!.trim(),
+        birth_date: birth_date || null,
+        ...(this.isEdit ? {} : { guardians: this.guardians.value }),
       };
 
       if (this.isEdit && this.participantId) {

@@ -1,32 +1,57 @@
-.loading-wrap{display:flex;justify-content:center;align-items:center;min-height:60vh}
-.form-page{padding-bottom:32px}
-.form-section{padding:0 16px;margin-bottom:24px}
-.section-title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--lh-text-secondary);margin:0 0 12px}
-.section-header{display:flex;align-items:center;justify-content:space-between}
-.section-header .section-title{margin:0}
-ion-item{--border-radius:8px;--background:var(--lh-surface);--border-color:var(--lh-border);--border-width:1px;--min-height:56px;margin-bottom:12px}
-ion-item ion-label{font-size:13px;font-weight:500;color:var(--lh-text-secondary)}
-ion-item ion-input,ion-item ion-textarea,ion-item ion-select{font-size:15px;color:var(--lh-text)}
-.field-row{display:flex;gap:12px}
-.field-row .half{flex:1}
-.thumbnail-preview{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.thumbnail-preview img{width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--lh-border)}
-.thumbnail-upload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;border:2px dashed var(--lh-border);border-radius:8px;cursor:pointer;color:var(--lh-text-muted);font-size:13px;transition:border-color .2s}
-.thumbnail-upload ion-icon{font-size:32px}
-.thumbnail-upload:hover{border-color:var(--lh-primary-700);color:var(--lh-primary-700)}
-.module-card{--background:var(--lh-surface);--border:1px solid var(--lh-border);--border-radius:10px;margin:0 0 12px}
-.module-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer}
-.module-header:hover{background:var(--lh-surface-muted)}
-.module-header-left{display:flex;align-items:center;gap:8px;min-width:0}
-.module-header-left ion-icon{font-size:18px;color:var(--lh-text-secondary);flex-shrink:0}
-.module-name{font-size:15px;font-weight:600;color:var(--lh-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.activity-count{font-size:11px}
-.activities-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--lh-border)}
-.activities-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.activities-header h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--lh-text-secondary);margin:0}
-.activity-card{background:var(--lh-bg);border:1px solid var(--lh-border);border-radius:8px;padding:12px;margin-bottom:12px}
-.activity-row{display:flex;gap:8px}
-.activity-row .activity-fields{flex:1;min-width:0}
-.empty-text{font-size:13px;color:var(--lh-text-muted);text-align:center;padding:16px}
-.form-actions{padding:8px 16px 16px}
-.save-btn{--border-radius:8px;--background:var(--lh-primary-700);--background-hover:var(--lh-primary-800);--color:#fff;font-weight:600;font-size:15px;height:48px;text-transform:none}
+.loading-wrap { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
+.form-page { padding-bottom: 32px; }
+.form-section { padding: 0 16px; margin-bottom: 24px; }
+.section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--lh-text-secondary); margin: 0 0 12px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; }
+.section-header .section-title { margin: 0; }
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--lh-surface);
+  border: 1.5px solid var(--lh-border);
+  border-radius: 14px;
+}
+
+.toggle-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--lh-text);
+}
+
+.toggle-subtitle {
+  font-size: 12px;
+  color: var(--lh-text-muted);
+  margin-top: 2px;
+}
+
+.thumbnail-preview { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.thumbnail-preview img { width: 120px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--lh-border); }
+.thumbnail-upload { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; border: 2px dashed var(--lh-border); border-radius: 8px; cursor: pointer; color: var(--lh-text-muted); font-size: 13px; transition: border-color 0.2s; }
+.thumbnail-upload ion-icon { font-size: 32px; }
+.thumbnail-upload:hover { border-color: var(--lh-primary-700); color: var(--lh-primary-700); }
+
+.module-card { --background: var(--lh-surface); --border: 1px solid var(--lh-border); --border-radius: 10px; margin: 0 0 12px; }
+.module-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
+.module-header:hover { background: var(--lh-surface-muted); }
+.module-header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.module-header-left ion-icon { font-size: 18px; color: var(--lh-text-secondary); flex-shrink: 0; }
+.module-name { font-size: 15px; font-weight: 600; color: var(--lh-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.activity-count { font-size: 11px; }
+
+.activities-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--lh-border); }
+.activities-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.activities-header h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--lh-text-secondary); margin: 0; }
+.activity-card { background: var(--lh-bg); border: 1px solid var(--lh-border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.activity-row { display: flex; gap: 8px; }
+.activity-row .activity-fields { flex: 1; min-width: 0; }
+.empty-text { font-size: 13px; color: var(--lh-text-muted); text-align: center; padding: 16px; }
+.form-actions { padding: 8px 16px 16px; }
+.save-btn { --border-radius: 8px; --background: var(--lh-primary-700); --background-hover: var(--lh-primary-800); --color: #fff; font-weight: 600; font-size: 15px; height: 48px; text-transform: none; }

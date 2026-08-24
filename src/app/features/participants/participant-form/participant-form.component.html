@@ -16,34 +16,124 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="page">
+  <div class="page" [formGroup]="form">
     <div class="surface-panel">
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input
-          [(ngModel)]="firstName"
-          placeholder="Nombre"
-          [disabled]="loading"
-        ></ion-input>
-      </ion-item>
+      <h2 class="section-title">Datos del participante</h2>
 
-      <ion-item>
-        <ion-label position="floating">Apellido</ion-label>
-        <ion-input
-          [(ngModel)]="lastName"
-          placeholder="Apellido"
-          [disabled]="loading"
-        ></ion-input>
-      </ion-item>
+      <div class="lh-field" [class.lh-field--error]="form.controls.first_name.touched && form.controls.first_name.invalid">
+        <label class="lh-field__label">Nombre <span class="lh-field__required">*</span></label>
+        <div class="lh-field__control">
+          <ion-input
+            formControlName="first_name"
+            placeholder="Ej. Laura"
+            [disabled]="loading"
+          ></ion-input>
+        </div>
+      </div>
 
-      <ion-item>
-        <ion-label position="floating">Fecha de nacimiento</ion-label>
-        <ion-input
-          type="date"
-          [(ngModel)]="birthDate"
-          [disabled]="loading"
-        ></ion-input>
-      </ion-item>
+      <div class="lh-field" [class.lh-field--error]="form.controls.last_name.touched && form.controls.last_name.invalid">
+        <label class="lh-field__label">Apellido <span class="lh-field__required">*</span></label>
+        <div class="lh-field__control">
+          <ion-input
+            formControlName="last_name"
+            placeholder="Ej. Garcia"
+            [disabled]="loading"
+          ></ion-input>
+        </div>
+      </div>
+
+      <div class="lh-field">
+        <label class="lh-field__label">Fecha de nacimiento</label>
+        <div class="lh-field__control">
+          <ion-input
+            type="date"
+            formControlName="birth_date"
+            [disabled]="loading"
+          ></ion-input>
+        </div>
+      </div>
     </div>
+
+    @if (!isEdit) {
+      <div class="surface-panel">
+        <h2 class="section-title">Familia</h2>
+        <p class="section-help">Tutores asociados al participante.</p>
+
+        @if (guardians.length === 0) {
+          <p class="empty-hint">Aun no hay tutores. Agrega a la madre, el padre u otro familiar.</p>
+        }
+
+        <div formArrayName="guardians">
+          @for (guardian of guardians.controls; track $index; let i = $index) {
+            <div class="guardian-card" [formGroupName]="i">
+              <div class="guardian-card-head">
+                <div class="guardian-avatar">T{{ i + 1 }}</div>
+                <div class="guardian-card-title">
+                  <strong>Tutor {{ i + 1 }}</strong>
+                </div>
+                <button class="guardian-remove" (click)="removeGuardian(i)" [disabled]="loading">
+                  <ion-icon name="close-outline"></ion-icon>
+                </button>
+              </div>
+
+              <div class="lh-field">
+                <label class="lh-field__label">Nombre del tutor</label>
+                <div class="lh-field__control">
+                  <ion-input
+                    formControlName="name"
+                    placeholder="Ej. Maria Garcia"
+                    [disabled]="loading"
+                  ></ion-input>
+                </div>
+              </div>
+
+              <div class="lh-field" [class.lh-field--error]="guardianAt(i).controls['email'].touched && guardianAt(i).controls['email'].invalid">
+                <label class="lh-field__label">Email del tutor <span class="lh-field__required">*</span></label>
+                <div class="lh-field__control">
+                  <ion-input
+                    type="email"
+                    formControlName="email"
+                    placeholder="tutor@email.com"
+                    [disabled]="loading"
+                  ></ion-input>
+                </div>
+              </div>
+
+              <div class="lh-field">
+                <label class="lh-field__label">Parentesco</label>
+                <div class="lh-field__control">
+                  <ion-input
+                    formControlName="relationship"
+                    placeholder="Madre, padre, tutor..."
+                    [disabled]="loading"
+                  ></ion-input>
+                </div>
+              </div>
+
+              <div class="checkbox-row">
+                <ion-checkbox formControlName="is_primary" [disabled]="loading"></ion-checkbox>
+                <span>Tutor principal</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <button class="guardian-add" (click)="addGuardian()" [disabled]="loading">
+          <ion-icon name="person-add-outline"></ion-icon>
+          Agregar tutor
+        </button>
+      </div>
+    }
   </div>
 </ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="save-bar">
+    <ion-button expand="block" (click)="save()" [disabled]="loading" class="save-btn">
+      @if (loading) {
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+      }
+      {{ isEdit ? 'Guardar cambios' : 'Crear participante' }}
+    </ion-button>
+  </div>
+</ion-footer>

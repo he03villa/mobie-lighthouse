@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/planning"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ board?.name || 'Tablero' }}</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="isCoach">
       <ion-button (click)="addColumn()">
         <ion-icon name="add-outline" slot="icon-only"></ion-icon>
       </ion-button>
@@ -27,7 +27,7 @@
       <div class="board-column" *ngFor="let column of columns">
         <div class="column-header">
           <span class="column-name">{{ column.name }}</span>
-          <div class="column-actions">
+          <div class="column-actions" *ngIf="isCoach">
             <ion-button fill="clear" size="small" (click)="addTask(column.id)">
               <ion-icon name="add-outline" slot="icon-only"></ion-icon>
             </ion-button>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="board-column add-column" (click)="addColumn()">
+      <div *ngIf="isCoach" class="board-column add-column" (click)="addColumn()">
         <ion-icon name="add-outline"></ion-icon>
         <span>Agregar columna</span>
       </div>

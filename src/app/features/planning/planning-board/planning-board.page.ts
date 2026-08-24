@@ -21,6 +21,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { NavigationService } from '../../../core/services/navigation';
 import { ToastService } from '../../../core/services/toast';
+import { ActiveTenantService } from '../../../core/services/active-tenant';
 
 @Component({
   selector: 'app-planning-board',
@@ -46,18 +47,21 @@ export class PlanningBoardPage {
   loading = true;
   board: PlanningBoard | null = null;
   columns: PlanningColumn[] = [];
+  isCoach = false;
 
   private route = inject(ActivatedRoute);
   private planningService = inject(PlanningService);
   private nav = inject(NavigationService);
   private alertCtrl = inject(AlertController);
   private toast = inject(ToastService);
+  private activeTenant = inject(ActiveTenantService);
 
   constructor() {
     addIcons({ addOutline, trashOutline, reorderThreeOutline });
   }
 
   async ionViewWillEnter(): Promise<void> {
+    this.isCoach = this.activeTenant.isCoachOrAbove();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       await this.loadBoard(id);

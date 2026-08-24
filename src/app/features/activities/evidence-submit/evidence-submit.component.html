@@ -3,89 +3,187 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/activities" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Enviar Evidencia</ion-title>
+    <ion-title>Enviar evidencia</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="page">
-    <div class="form-section surface-panel">
-      <h3 class="section-title">Descripcion</h3>
-      <ion-textarea
-        [(ngModel)]="textContent"
-        placeholder="Describe la evidencia que deseas enviar..."
-        [rows]="6"
-        class="form-textarea"
-      ></ion-textarea>
+    <!-- Activity Context Card -->
+    <div class="activity-context" [style.background]="typeGradient">
+      <div class="activity-context__icon">
+        <ion-icon [name]="typeIcon"></ion-icon>
+      </div>
+      <div class="activity-context__info">
+        @if (activityData) {
+          <h2 class="activity-context__name">{{ activityData.name }}</h2>
+        } @else {
+          <h2 class="activity-context__name">Enviar evidencia</h2>
+        }
+        <div class="activity-context__meta">
+          @if (moduleName) {
+            <span class="meta-pill">
+              <ion-icon name="school-outline"></ion-icon>
+              {{ moduleName }}
+            </span>
+          }
+          <span class="meta-pill meta-pill--type">{{ typeLabel }}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="form-section surface-panel">
-      <h3 class="section-title">Archivos adjuntos</h3>
+    <!-- Instructions -->
+    @if (activityData?.description) {
+      <div class="instruction-callout">
+        <div class="instruction-callout__icon">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="instruction-callout__text">
+          <span class="instruction-callout__label">Instrucciones</span>
+          <p>{{ activityData!.description }}</p>
+        </div>
+      </div>
+    }
 
-      <div class="attachment-actions">
-        <ion-button fill="outline" class="attach-btn">
-          <ion-icon name="cameraOutline" slot="start"></ion-icon>
-          Foto
-        </ion-button>
-        <ion-button fill="outline" class="attach-btn">
-          <ion-icon name="documentAttachOutline" slot="start"></ion-icon>
-          Archivo
-        </ion-button>
+    <!-- Type: reflection / quiz — text first -->
+    @if (activityType === 'reflection' || activityType === 'quiz') {
+      <div class="form-section">
+        <h3 class="section-title">
+          @if (activityType === 'reflection') { Tu reflexion } @else { Tu respuesta }
+        </h3>
+        <div class="lh-field">
+          <div class="lh-field__control">
+            <ion-textarea
+              [(ngModel)]="textContent"
+              [placeholder]="activityType === 'reflection' ? 'Comparte lo que pensaste o aprendiste...' : 'Escribe tu respuesta aqui...'"
+              [rows]="8"
+            ></ion-textarea>
+          </div>
+        </div>
       </div>
 
-      <input
-        #fileInput
-        type="file"
-        multiple
-        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
-        (change)="onFileSelected($event)"
-        class="file-input"
-      />
+      <div class="form-section">
+        <h3 class="section-title">Archivos adjuntos (opcional)</h3>
+        <div class="upload-zone"
+             [class.upload-zone--active]="dragOver"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave()"
+             (drop)="onDrop($event)"
+             (click)="feedback.tap(); fileInput.click()">
+          <ion-icon name="cloudUploadOutline" class="upload-zone__icon"></ion-icon>
+          <span class="upload-zone__text">Toca para adjuntar archivos</span>
+          <span class="upload-zone__hint"> Fotos, documentos o videos</span>
+        </div>
+        <input #fileInput type="file" multiple [accept]="acceptTypes" (change)="onFileSelected($event)" class="file-input" />
+      </div>
+    }
 
-      @if (files.length > 0) {
+    <!-- Type: upload — upload first -->
+    @if (activityType === 'upload') {
+      <div class="form-section">
+        <h3 class="section-title">Tu evidencia</h3>
+        <div class="upload-zone upload-zone--large"
+             [class.upload-zone--active]="dragOver"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave()"
+             (drop)="onDrop($event)"
+             (click)="feedback.tap(); fileInput.click()">
+          <div class="upload-zone__visual">
+            <ion-icon name="cameraOutline" class="upload-zone__icon-large"></ion-icon>
+          </div>
+          <span class="upload-zone__text">Toca para tomar foto o seleccionar archivo</span>
+          <span class="upload-zone__hint"> Imagenes, videos o documentos</span>
+        </div>
+        <input #fileInput type="file" multiple [accept]="acceptTypes" (change)="onFileSelected($event)" class="file-input" capture="environment" />
+      </div>
+
+      @if (files.length === 0) {
+        <div class="form-section">
+          <h3 class="section-title">Descripcion (opcional)</h3>
+          <div class="lh-field">
+            <div class="lh-field__control">
+              <ion-textarea
+                [(ngModel)]="textContent"
+                placeholder="Agrega un comentario sobre tu evidencia..."
+                [rows]="4"
+              ></ion-textarea>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Type: completion — CTA first -->
+    @if (activityType === 'completion') {
+      <div class="form-section">
+        <div class="completion-cta" (click)="feedback.tap(); textContent = '__completed__'; submit()">
+          <div class="completion-cta__icon">
+            <ion-icon name="checkmarkCircleOutline"></ion-icon>
+          </div>
+          <div class="completion-cta__info">
+            <span class="completion-cta__title">Marcar como completada</span>
+            <span class="completion-cta__hint">Confirma que completaste esta actividad</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Nota opcional</h3>
+        <div class="lh-field">
+          <div class="lh-field__control">
+            <ion-textarea
+              [(ngModel)]="textContent"
+              placeholder="Agrega un comentario si lo deseas..."
+              [rows]="4"
+            ></ion-textarea>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- File list (shared) -->
+    @if (files.length > 0) {
+      <div class="form-section">
+        <h3 class="section-title">Archivos adjuntos</h3>
         <div class="file-list">
           @for (file of files; track $index; let i = $index) {
             <div class="file-preview">
-              <ion-icon
-                [name]="
-                  file.type.startsWith('image/')
-                    ? 'image-outline'
-                    : file.type.startsWith('video/')
-                      ? 'videocam-outline'
-                      : file.type.startsWith('audio/')
-                        ? 'mic-outline'
-                        : 'document-text-outline'
-                "
-                color="primary"
-              ></ion-icon>
-              <div class="file-info">
-                <span class="file-name">{{ file.name }}</span>
-                <span class="file-size">{{ (file.size / 1024) | number:'1.0-0' }} KB</span>
+              <ion-icon [name]="getFileIcon(file.type)" class="file-preview__icon"></ion-icon>
+              <div class="file-preview__info">
+                <span class="file-preview__name">{{ file.name }}</span>
+                <span class="file-preview__size">{{ (file.size / 1024) | number:'1.0-0' }} KB</span>
               </div>
-              <ion-button fill="clear" size="small" (click)="removeFile(i)" color="danger">
-                <ion-icon name="close-circle-outline" slot="icon-only"></ion-icon>
-              </ion-button>
+              <button class="file-preview__remove" (click)="removeFile(i)">
+                <ion-icon name="close-circle-outline"></ion-icon>
+              </button>
             </div>
           }
         </div>
-      }
-    </div>
+      </div>
+    }
 
-    <div class="action-area">
-      <ion-button
-        expand="block"
-        (click)="submit()"
-        [disabled]="loading"
-        class="submit-btn"
-      >
-        @if (loading) {
-          <ion-spinner name="crescent" slot="start"></ion-spinner>
-          Enviando...
-        } @else {
-          <ion-icon name="sendOutline" slot="start"></ion-icon>
-          Enviar evidencia
-        }
-      </ion-button>
-    </div>
+    <!-- Submit button (for upload, reflection, quiz) -->
+    @if (activityType !== 'completion') {
+      <div class="action-area">
+        <button class="submit-btn" (click)="feedback.tap(); submit()" [disabled]="loading">
+          @if (loading) {
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Enviando...</span>
+          } @else {
+            <ion-icon name="sendOutline"></ion-icon>
+            <span>Enviar evidencia</span>
+          }
+        </button>
+      </div>
+    }
   </div>
 </ion-content>
+
+@if (showCelebration) {
+  <app-celebration-overlay
+    [xpEarned]="celebrationXP"
+    [message]="celebrationMsg"
+    [subtitle]="moduleName ? 'Módulo: ' + moduleName : ''"
+    (dismissed)="onCelebrationDismiss()"
+  />
+}

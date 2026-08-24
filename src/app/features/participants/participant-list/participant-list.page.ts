@@ -6,19 +6,21 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonIcon,
-  IonButton,
   IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonButton,
+  IonFab,
+  IonFabButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   addOutline,
   personOutline,
   peopleOutline,
-  chevronForwardOutline,
+  checkmarkCircleOutline,
+  personRemoveOutline,
 } from 'ionicons/icons';
 import { ParticipantService } from '../../../core/services/participant';
 import { Participant } from '../../../core/models/participant';
@@ -38,12 +40,13 @@ import { NavigationService } from '../../../core/services/navigation';
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonIcon,
-    IonButton,
     IonSearchbar,
+    IonSegment,
+    IonSegmentButton,
+    IonButton,
+    IonFab,
+    IonFabButton,
+    IonIcon,
     LoadingSpinnerComponent,
     EmptyStateComponent,
   ],
@@ -54,16 +57,53 @@ export class ParticipantListPage {
 
   loading = true;
   participants: Participant[] = [];
-  filtered: Participant[] = [];
   searchTerm = '';
+  filter: 'all' | 'with_groups' | 'no_groups' = 'all';
 
   constructor() {
     addIcons({
       addOutline,
       personOutline,
       peopleOutline,
-      chevronForwardOutline,
+      checkmarkCircleOutline,
+      personRemoveOutline,
     });
+  }
+
+  get filtered(): Participant[] {
+    let list = this.participants;
+
+    if (this.filter === 'with_groups') {
+      list = list.filter(p => p.groups && p.groups.length > 0);
+    } else if (this.filter === 'no_groups') {
+      list = list.filter(p => !p.groups || p.groups.length === 0);
+    }
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      list = list.filter(
+        p =>
+          p.full_name.toLowerCase().includes(term) ||
+          p.first_name.toLowerCase().includes(term) ||
+          p.last_name.toLowerCase().includes(term),
+      );
+    }
+
+    return list;
+  }
+
+  get featured(): Participant | undefined {
+    const f = this.filtered;
+    return f.length > 0 ? f[0] : undefined;
+  }
+
+  get rest(): Participant[] {
+    const f = this.filtered;
+    return f.length > 1 ? f.slice(1) : [];
+  }
+
+  get hasResults(): boolean {
+    return this.filtered.length > 0;
   }
 
   ionViewWillEnter(): void {
@@ -74,31 +114,19 @@ export class ParticipantListPage {
     this.loading = true;
     try {
       this.participants = await this.participantService.listAsync();
-      this.applySearch();
     } catch {
       this.participants = [];
-      this.filtered = [];
     } finally {
       this.loading = false;
     }
   }
 
-  onSearch(term: string): void {
-    this.searchTerm = term.toLowerCase();
-    this.applySearch();
+  onSearch(value: string): void {
+    this.searchTerm = value.toLowerCase();
   }
 
-  private applySearch(): void {
-    if (!this.searchTerm) {
-      this.filtered = [...this.participants];
-    } else {
-      this.filtered = this.participants.filter(
-        p =>
-          p.full_name.toLowerCase().includes(this.searchTerm) ||
-          p.first_name.toLowerCase().includes(this.searchTerm) ||
-          p.last_name.toLowerCase().includes(this.searchTerm),
-      );
-    }
+  onFilterChange(value: string): void {
+    this.filter = value as 'all' | 'with_groups' | 'no_groups';
   }
 
   navigateToDetail(id: string): void {
@@ -107,5 +135,21 @@ export class ParticipantListPage {
 
   navigateToCreate(): void {
     this.nav.forward('/participants/new');
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+  }
+
+  initials(p: Participant): string {
+    return p.first_name?.charAt(0)?.toUpperCase() ?? '?';
+  }
+
+  groupCount(p: Participant): number {
+    return p.groups?.length ?? 0;
+  }
+
+  guardianCount(p: Participant): number {
+    return p.guardians?.length ?? 0;
   }
 }

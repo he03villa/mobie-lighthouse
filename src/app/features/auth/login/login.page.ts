@@ -4,11 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
 import {
   IonContent,
-  IonItem,
-  IonLabel,
   IonInput,
-  IonButton,
-  IonText,
   IonSpinner,
   IonIcon,
 } from '@ionic/angular/standalone';
@@ -16,11 +12,13 @@ import {
   addIcons,
 } from 'ionicons';
 import {
-  mailOutline,
-  lockClosedOutline,
   eyeOutline,
   eyeOffOutline,
   flashOutline,
+  arrowForwardOutline,
+  logoGoogle,
+  logoApple,
+  alertCircleOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth';
 import { NavigationService } from '../../../core/services/navigation';
@@ -35,11 +33,7 @@ import { ToastService } from '../../../core/services/toast';
     CommonModule,
     FormsModule,
     IonContent,
-    IonItem,
-    IonLabel,
     IonInput,
-    IonButton,
-    IonText,
     IonSpinner,
     IonIcon,
   ],
@@ -56,7 +50,7 @@ export class LoginPage {
   errorMessage = '';
 
   constructor() {
-    addIcons({ mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline, flashOutline });
+    addIcons({ eyeOutline, eyeOffOutline, flashOutline, arrowForwardOutline, logoGoogle, logoApple, alertCircleOutline });
   }
 
   togglePassword(): void {

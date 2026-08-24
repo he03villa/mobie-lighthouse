@@ -12,8 +12,8 @@ export class NavigationService {
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
   );
 
-  forward(url: string): void {
-    this.nav.navigateForward(url);
+  forward(url: string, state?: Record<string, unknown>): void {
+    this.nav.navigateForward(url, { state });
   }
 
   back(): void {

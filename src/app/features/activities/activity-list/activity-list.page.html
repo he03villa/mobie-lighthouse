@@ -1,13 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Actividades</ion-title>
+    <ion-title>{{ isParticipant ? 'Mis actividades' : 'Actividades' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Actividades</ion-title>
+      <ion-title size="large">{{ isParticipant ? 'Mis actividades' : 'Actividades' }}</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -16,10 +16,11 @@
       <ion-segment-button value="all">Todos</ion-segment-button>
       <ion-segment-button value="pending">Pendientes</ion-segment-button>
       <ion-segment-button value="submitted">Enviados</ion-segment-button>
-      <ion-segment-button value="reviewed">Revisados</ion-segment-button>
+      <ion-segment-button value="approved">Aprobados</ion-segment-button>
     </ion-segment>
 
     <ion-searchbar
+      class="searchbar-premium"
       placeholder="Buscar actividades..."
       [debounce]="300"
       (ionInput)="onSearch($any($event).detail.value!)"
@@ -27,50 +28,89 @@
 
     @if (loading) {
       <app-loading-spinner message="Cargando actividades..."></app-loading-spinner>
-    } @else if (filteredSubmissions.length === 0) {
+    } @else if (filteredGroups.length === 0) {
       <app-empty-state
         icon="folder-open-outline"
         title="Sin actividades"
         subtitle="No se encontraron actividades con los filtros seleccionados"
       ></app-empty-state>
     } @else {
-      <ion-list>
-        @for (submission of filteredSubmissions; track submission.id) {
-          <ion-item
-            button
-            detail="false"
-            (click)="navigateToDetail(submission.id)"
-            class="activity-item"
-          >
-            <ion-icon
-              [name]="
-                submission.status === 'approved' || submission.status === 'reviewed'
-                  ? 'checkmark-circle-outline'
-                  : submission.status === 'rejected'
-                    ? 'close-circle-outline'
-                    : 'time-outline'
-              "
-              [color]="getStatusColor(submission.status)"
-              slot="start"
-            ></ion-icon>
-            <ion-label>
-              <h2>{{ submission.activity.name }}</h2>
-              <p>
-                {{ submission.enrollment.participant.full_name }}
-                @if (submission.submitted_at) {
-                  &middot; {{ submission.submitted_at | date:'dd MMM yyyy' }}
-                }
-              </p>
-            </ion-label>
-            <ion-note slot="end">
-              <span class="status-chip" [ngClass]="'status-' + getStatusColor(submission.status)">
-                {{ getStatusLabel(submission.status) }}
+      <!-- Featured Program Card (participant only) -->
+      @if (isParticipant && programName) {
+        <div class="program-featured" (click)="navigateToProgram()">
+          <div class="program-featured__bg"></div>
+          <div class="program-featured__content">
+            <div class="program-featured__badge">
+              <ion-icon name="school-outline"></ion-icon>
+              Programa activo
+            </div>
+            <h2 class="program-featured__name">{{ programName }}</h2>
+            <div class="program-featured__stats">
+              <span class="stat-pill">
+                <ion-icon name="layers-outline"></ion-icon>
+                {{ moduleGroups.length }} modulos
               </span>
-            </ion-note>
-            <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
-          </ion-item>
-        }
-      </ion-list>
+              <span class="stat-pill">
+                <ion-icon name="document-text-outline"></ion-icon>
+                {{ totalActivities }} actividades
+              </span>
+              <span class="stat-pill stat-pill--accent">
+                {{ progressPercent }}% completado
+              </span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="progressPercent"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Module Groups -->
+      @for (group of filteredGroups; track group.name) {
+        <div class="module-group">
+          <div class="module-header">
+            <div class="module-header__info">
+              <h3 class="module-header__name">{{ group.name }}</h3>
+              <span class="module-header__count">
+                {{ group.completedCount }}/{{ group.totalCount }} completadas
+              </span>
+            </div>
+            <div class="module-progress">
+              <div
+                class="module-progress__fill"
+                [style.width.%]="group.totalCount > 0 ? (group.completedCount / group.totalCount) * 100 : 0"
+              ></div>
+            </div>
+          </div>
+
+          <div class="activity-list">
+            @for (item of group.activities; track item.id) {
+              <div
+                class="activity-card"
+                [class.activity-card--clickable]="isClickable(item)"
+                [class.activity-card--approved]="item.status === 'approved'"
+                (click)="isClickable(item) && navigateToActivity(item)"
+              >
+                <div class="activity-card__icon" [ngClass]="getActivityIconClass(item.type)">
+                  <ion-icon [name]="getActivityIcon(item.type)"></ion-icon>
+                </div>
+                <div class="activity-card__body">
+                  <h4 class="activity-card__name">{{ item.name }}</h4>
+                  <span class="activity-card__type">{{ item.type }}</span>
+                </div>
+                <div class="activity-card__right">
+                  <span class="status-chip" [ngClass]="'status-' + getStatusColor(item.status)">
+                    {{ getStatusLabel(item.status) }}
+                  </span>
+                  @if (isClickable(item)) {
+                    <ion-icon name="chevron-forward-outline" class="activity-card__chevron"></ion-icon>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
     }
   </div>
 

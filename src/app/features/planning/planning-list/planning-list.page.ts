@@ -5,10 +5,9 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
-  IonList,
-  IonItem,
-  IonLabel,
   IonIcon,
+  IonFab,
+  IonFabButton,
   AlertController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -18,6 +17,7 @@ import {
   layersOutline,
   chevronForwardOutline,
   trashOutline,
+  reorderThreeOutline,
 } from 'ionicons/icons';
 import { PlanningService } from '../../../core/services/planning';
 import { PlanningBoard } from '../../../core/models/planning';
@@ -25,6 +25,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { NavigationService } from '../../../core/services/navigation';
 import { ToastService } from '../../../core/services/toast';
+import { ActiveTenantService } from '../../../core/services/active-tenant';
 
 @Component({
   selector: 'app-planning-list',
@@ -37,10 +38,9 @@ import { ToastService } from '../../../core/services/toast';
     IonHeader,
     IonTitle,
     IonToolbar,
-    IonList,
-    IonItem,
-    IonLabel,
     IonIcon,
+    IonFab,
+    IonFabButton,
     LoadingSpinnerComponent,
     EmptyStateComponent,
   ],
@@ -48,11 +48,13 @@ import { ToastService } from '../../../core/services/toast';
 export class PlanningListPage {
   loading = true;
   boards: PlanningBoard[] = [];
+  isCoach = false;
 
   private planningService = inject(PlanningService);
   private nav = inject(NavigationService);
   private alertCtrl = inject(AlertController);
   private toast = inject(ToastService);
+  private activeTenant = inject(ActiveTenantService);
 
   constructor() {
     addIcons({
@@ -61,10 +63,12 @@ export class PlanningListPage {
       layersOutline,
       chevronForwardOutline,
       trashOutline,
+      reorderThreeOutline,
     });
   }
 
   async ionViewWillEnter(): Promise<void> {
+    this.isCoach = this.activeTenant.isCoachOrAbove();
     await this.loadBoards();
   }
 
@@ -106,5 +110,21 @@ export class PlanningListPage {
       ],
     });
     await alert.present();
+  }
+
+  formatRelativeDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHrs = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1) return 'Ahora mismo';
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    if (diffHrs < 24) return `Hace ${diffHrs}h`;
+    if (diffDays < 7) return `Hace ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
+    if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} sem`;
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   }
 }

@@ -54,6 +54,18 @@ export class ActiveTenantService {
     return tenant.roles.some(r => ['owner', 'admin', 'coach'].includes(r));
   }
 
+  isParticipant(): boolean {
+    const tenant = this.activeTenantSubject.value;
+    if (!tenant) return false;
+    return tenant.roles.includes('participant');
+  }
+
+  isParent(): boolean {
+    const tenant = this.activeTenantSubject.value;
+    if (!tenant) return false;
+    return tenant.roles.includes('parent');
+  }
+
   clear(): void {
     this.tenantsSubject.next([]);
     this.activeTenantSubject.next(null);

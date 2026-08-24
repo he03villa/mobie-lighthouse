@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
-  IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonText,
-  IonNote,
   IonSpinner,
   IonIcon,
 } from '@ionic/angular/standalone';
@@ -36,12 +33,9 @@ import { ToastService } from '../../../core/services/toast';
     CommonModule,
     FormsModule,
     IonContent,
-    IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     IonText,
-    IonNote,
     IonSpinner,
     IonIcon,
   ],

@@ -6,21 +6,22 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonIcon,
-  IonButton,
   IonSearchbar,
-  IonChip,
+  IonSegment,
+  IonSegmentButton,
+  IonButton,
+  IonFab,
+  IonFabButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   addOutline,
   schoolOutline,
-  checkmarkCircleOutline,
   timeOutline,
-  chevronForwardOutline,
+  layersOutline,
+  checkmarkCircleOutline,
+  hourglassOutline,
 } from 'ionicons/icons';
 import { ProgramService } from '../../../core/services/program';
 import { Program } from '../../../core/models/program';
@@ -40,13 +41,13 @@ import { NavigationService } from '../../../core/services/navigation';
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonIcon,
-    IonButton,
     IonSearchbar,
-    IonChip,
+    IonSegment,
+    IonSegmentButton,
+    IonButton,
+    IonFab,
+    IonFabButton,
+    IonIcon,
     LoadingSpinnerComponent,
     EmptyStateComponent,
   ],
@@ -58,15 +59,54 @@ export class ProgramListPage {
   loading = true;
   programs: Program[] = [];
   searchTerm = '';
+  filter: 'all' | 'published' | 'draft' = 'all';
 
   constructor() {
     addIcons({
       addOutline,
       schoolOutline,
-      checkmarkCircleOutline,
       timeOutline,
-      chevronForwardOutline,
+      layersOutline,
+      checkmarkCircleOutline,
+      hourglassOutline,
     });
+  }
+
+  get filtered(): Program[] {
+    let list = this.programs;
+
+    if (this.filter === 'published') {
+      list = list.filter(p => p.is_published);
+    } else if (this.filter === 'draft') {
+      list = list.filter(p => !p.is_published);
+    }
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      list = list.filter(
+        p =>
+          p.name.toLowerCase().includes(term) ||
+          (p.description && p.description.toLowerCase().includes(term)),
+      );
+    }
+
+    return list;
+  }
+
+  get featured(): Program | undefined {
+    const filtered = this.filtered;
+    if (filtered.length === 0) return undefined;
+    return filtered[0];
+  }
+
+  get rest(): Program[] {
+    const filtered = this.filtered;
+    if (filtered.length <= 1) return [];
+    return filtered.slice(1);
+  }
+
+  get hasResults(): boolean {
+    return this.filtered.length > 0;
   }
 
   ionViewWillEnter(): void {
@@ -84,6 +124,14 @@ export class ProgramListPage {
     }
   }
 
+  onSearch(value: string): void {
+    this.searchTerm = value.toLowerCase();
+  }
+
+  onFilterChange(value: string): void {
+    this.filter = value as 'all' | 'published' | 'draft';
+  }
+
   navigateToDetail(id: string): void {
     this.nav.forward(`/programs/${id}`);
   }
@@ -92,12 +140,11 @@ export class ProgramListPage {
     this.nav.forward('/programs/new');
   }
 
-  formatDate(date: string | null | undefined): string {
-    if (!date) return '';
-    return new Date(date).toLocaleDateString('es-MX', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
+  clearSearch(): void {
+    this.searchTerm = '';
+  }
+
+  moduleCount(program: Program): number {
+    return program.modules?.length ?? 0;
   }
 }

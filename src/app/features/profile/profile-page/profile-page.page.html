@@ -11,6 +11,39 @@
       </span>
     </div>
 
+    <!-- Gamification Stats -->
+    <div class="gamification-section">
+      <div class="level-bar">
+        <div class="level-bar__info">
+          <span class="level-bar__level">Nivel {{ levelInfo.level }}</span>
+          <span class="level-bar__xp">{{ levelInfo.currentXP }} / {{ levelInfo.nextLevelXP }} XP</span>
+        </div>
+        <div class="level-bar__track">
+          <div class="level-bar__fill" [style.width.%]="levelInfo.progress * 100"></div>
+        </div>
+      </div>
+      @if (streakCount > 0) {
+        <div class="streak-display">
+          <span class="streak-display__icon">🔥</span>
+          <span class="streak-display__count">{{ streakCount }}</span>
+          <span class="streak-display__label">dias seguidos</span>
+        </div>
+      }
+    </div>
+
+    <!-- Badges Shelf -->
+    <div class="settings-section">
+      <div class="settings-label">Logros</div>
+      <div class="badges-grid">
+        @for (badge of badges; track badge.id) {
+          <div class="badge-item" [class.badge-item--locked]="!badge.unlocked">
+            <span class="badge-item__icon">{{ badge.icon }}</span>
+            <span class="badge-item__name">{{ badge.name }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
     <div class="settings-section">
       <div class="settings-label">Cuenta</div>
       <ion-list lines="none">
@@ -42,6 +75,18 @@
             slot="end"
             [checked]="darkMode"
             (ionChange)="toggleDarkMode()"
+          ></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="notifications-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Recordatorio diario</h3>
+            <p>Manten tu racha activa</p>
+          </ion-label>
+          <ion-toggle
+            slot="end"
+            [checked]="reminderEnabled"
+            (ionChange)="toggleReminder()"
           ></ion-toggle>
         </ion-item>
       </ion-list>

@@ -239,6 +239,247 @@ ion-refresher {
   &:active { transform: scale(0.95); }
 }
 
+/* ============================================================
+   Premium Header — @property for gradient interpolation
+   ============================================================ */
+
+@property --lh-gradient-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 135deg;
+}
+
+@property --lh-gradient-hue {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 220;
+}
+
+@keyframes gradient-drift {
+  0%   { --lh-gradient-angle: 135deg; --lh-gradient-hue: 220; }
+  100% { --lh-gradient-angle: 225deg; --lh-gradient-hue: 280; }
+}
+
+/* --- Glassmorphism base --- */
+
+.lh-glass {
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .lh-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.85) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lh-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.85) !important;
+  }
+}
+
+/* --- Premium Icon Button (6 states) --- */
+
+.lh-btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms ease, background 150ms ease, box-shadow 200ms ease;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    transition: transform 200ms ease;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+      ion-icon { transform: scale(1.08); }
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--lh-bg), 0 0 0 4px var(--lh-primary-500);
+  }
+
+  &:active {
+    transform: scale(0.92);
+    background: rgba(255, 255, 255, 0.2);
+    transition-duration: 60ms;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  &.loading {
+    ion-icon { opacity: 0; }
+    &::after {
+      content: '';
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: lh-spin 0.6s linear infinite;
+    }
+  }
+
+  &.has-notification::after {
+    content: '';
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--lh-error);
+    box-shadow: 0 0 6px rgba(217, 45, 32, 0.6);
+    animation: lh-pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes lh-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes lh-pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(217, 45, 32, 0.4); }
+  50%      { box-shadow: 0 0 10px rgba(217, 45, 32, 0.7); }
+}
+
+/* --- Premium Typography --- */
+
+.lh-heading-lg {
+  font-size: clamp(22px, 4vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--lh-text);
+}
+
+.lh-overline {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lh-text-muted);
+}
+
+/* ============================================================
+   Premium Form Fields — reusable across all pages
+   ============================================================ */
+
+.lh-field {
+  margin-bottom: 16px;
+}
+
+.lh-field__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--lh-text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.lh-field__required {
+  color: var(--lh-error);
+  margin-left: 2px;
+}
+
+.lh-field__control {
+  border: 1.5px solid var(--lh-border);
+  border-radius: 14px;
+  background: var(--lh-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--lh-primary-700);
+    box-shadow: 0 0 0 4px var(--lh-primary-bg);
+  }
+
+  ion-input,
+  ion-textarea,
+  ion-select {
+    --color: var(--lh-text);
+    --placeholder-color: var(--lh-text-muted);
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    width: 100%;
+    font-size: 15px;
+  }
+}
+
+.lh-field--error {
+  .lh-field__label {
+    color: var(--lh-error);
+  }
+
+  .lh-field__control {
+    border-color: var(--lh-error);
+    box-shadow: 0 0 0 4px rgba(217, 45, 32, 0.08);
+  }
+}
+
+.lh-field__error {
+  display: block;
+  font-size: 12px;
+  color: var(--lh-error);
+  margin-top: 4px;
+}
+
+.lh-field__hint {
+  display: block;
+  font-size: 12px;
+  color: var(--lh-text-muted);
+  margin-top: 4px;
+}
+
+.lh-field-row {
+  display: flex;
+  gap: 12px;
+
+  .lh-field {
+    flex: 1;
+  }
+}
+
+.lh-field--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* --- Global FAB --- */
+
+ion-fab {
+  margin-bottom: 16px;
+  margin-inline-end: 16px;
+}
+
+ion-fab-button {
+  --background: var(--lh-primary-700);
+  --background-hover: var(--lh-primary-800);
+}
+
 /* --- Reduced Motion --- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -248,3 +489,9 @@ ion-refresher {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Gamification chips */
+.header-chips{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.streak-chip{display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:10px;background:rgba(255,255,255,.2);font-size:12px;font-weight:700;color:#fff}
+.streak-chip ion-icon{font-size:14px;color:var(--streak-color,#f97316)}
+.level-chip{padding:2px 6px;border-radius:10px;background:rgba(255,255,255,.15);font-size:10px;font-weight:700;color:rgba(255,255,255,.9)}

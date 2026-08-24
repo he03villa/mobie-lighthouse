@@ -12,50 +12,134 @@
   </ion-header>
 
   <div class="page">
-    <ion-searchbar
-      placeholder="Buscar participantes..."
-      [debounce]="300"
-      (ionInput)="onSearch($any($event).detail.value!)"
-    ></ion-searchbar>
+    <div class="search-row">
+      <ion-searchbar
+        class="searchbar-premium"
+        placeholder="Buscar participantes..."
+        [debounce]="300"
+        (ionInput)="onSearch($any($event).detail.value!)"
+      ></ion-searchbar>
+    </div>
+
+    <ion-segment [value]="filter" (ionChange)="onFilterChange($any($event).detail.value)" class="filter-segment">
+      <ion-segment-button value="all">Todos</ion-segment-button>
+      <ion-segment-button value="with_groups">Con grupos</ion-segment-button>
+      <ion-segment-button value="no_groups">Sin grupos</ion-segment-button>
+    </ion-segment>
 
     @if (loading) {
       <app-loading-spinner message="Cargando participantes..."></app-loading-spinner>
-    } @else if (filtered.length === 0) {
-      <app-empty-state
-        icon="people-outline"
-        title="Sin participantes"
-        subtitle="Agrega tu primer participante para comenzar"
-      >
-        <ion-button fill="outline" (click)="navigateToCreate()">
-          <ion-icon name="add-outline" slot="start"></ion-icon>
-          Agregar participante
-        </ion-button>
-      </app-empty-state>
-    } @else {
-      <ion-list>
-        @for (participant of filtered; track participant.id) {
-          <ion-item
-            button
-            detail="false"
-            (click)="navigateToDetail(participant.id)"
-            class="participant-item"
+    } @else if (!hasResults) {
+      <div class="empty-wrap">
+        @if (searchTerm || filter !== 'all') {
+          <app-empty-state
+            icon="search-outline"
+            title="Sin resultados"
+            subtitle="No se encontraron participantes con los filtros actuales"
           >
-            <div class="participant-avatar" slot="start">
-              {{ participant.first_name.charAt(0) }}
-            </div>
-            <ion-label>
-              <h2>{{ participant.full_name }}</h2>
-              @if (participant.groups && participant.groups.length > 0) {
-                <p>
-                  <ion-icon name="people-outline"></ion-icon>
-                  {{ participant.groups.length }} {{ participant.groups.length === 1 ? 'grupo' : 'grupos' }}
-                </p>
-              }
-            </ion-label>
-            <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
-          </ion-item>
+            <ion-button fill="clear" (click)="clearSearch(); filter = 'all'">
+              Limpiar filtros
+            </ion-button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state
+            icon="people-outline"
+            title="Sin participantes"
+            subtitle="Agrega tu primer participante para comenzar"
+          >
+            <ion-button fill="outline" (click)="navigateToCreate()">
+              <ion-icon name="add-outline" slot="start"></ion-icon>
+              Agregar participante
+            </ion-button>
+          </app-empty-state>
         }
-      </ion-list>
+      </div>
+    } @else {
+      @if (featured) {
+        <div class="featured-card" (click)="navigateToDetail(featured.id)">
+          @if (featured.avatar) {
+            <img class="featured-card__bg" [src]="featured.avatar" alt="" />
+          } @else {
+            <div class="featured-card__bg featured-card__bg--gradient"></div>
+          }
+          <div class="featured-card__overlay"></div>
+          <div class="featured-card__content">
+            <div class="featured-card__avatar">
+              {{ initials(featured) }}
+            </div>
+            <h2 class="featured-card__name">{{ featured.full_name }}</h2>
+            <div class="featured-card__meta">
+              @if (groupCount(featured) > 0) {
+                <span class="meta-item">
+                  <ion-icon name="people-outline"></ion-icon>
+                  {{ groupCount(featured) }} {{ groupCount(featured) === 1 ? 'grupo' : 'grupos' }}
+                </span>
+              }
+              @if (guardianCount(featured) > 0) {
+                <span class="meta-item">
+                  {{ guardianCount(featured) }} {{ guardianCount(featured) === 1 ? 'tutor' : 'tutores' }}
+                </span>
+              }
+              @if (featured.birth_date) {
+                <span class="meta-item">{{ featured.birth_date }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (rest.length > 0) {
+        <div class="section-header">
+          <span class="section-label">
+            @if (filter === 'with_groups') {
+              Con grupos
+            } @else if (filter === 'no_groups') {
+              Sin grupos
+            } @else {
+              Todos los participantes
+            }
+          </span>
+          <span class="section-count">{{ filtered.length }}</span>
+        </div>
+
+        <div class="participant-grid">
+          @for (p of rest; track p.id) {
+            <div class="participant-card" (click)="navigateToDetail(p.id)">
+              <div class="participant-card__avatar">
+                @if (p.avatar) {
+                  <img [src]="p.avatar" [alt]="p.full_name" />
+                } @else {
+                  <span class="participant-card__initials">{{ initials(p) }}</span>
+                }
+              </div>
+              <div class="participant-card__body">
+                <h3 class="participant-card__name">{{ p.full_name }}</h3>
+                <div class="participant-card__meta">
+                  @if (groupCount(p) > 0) {
+                    <span>
+                      <ion-icon name="people-outline"></ion-icon>
+                      {{ groupCount(p) }} {{ groupCount(p) === 1 ? 'grupo' : 'grupos' }}
+                    </span>
+                  } @else {
+                    <span class="meta-muted">Sin grupos</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (filtered.length === 1) {
+        <div class="section-header">
+          <span class="section-label">Participantes</span>
+          <span class="section-count">1</span>
+        </div>
+      }
     }
   </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="navigateToCreate()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

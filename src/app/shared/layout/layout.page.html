@@ -1,17 +1,35 @@
 <ion-app>
   @if (isCoach) {
     <div class="coach-layout">
-      <header class="coach-header">
-        @if (isRootPage) {
-          <button class="menu-btn" (click)="toggleSidebar()">
-            <ion-icon name="menu-outline"></ion-icon>
+      <header class="coach-header lh-glass" [class.scrolled]="headerScrolled"
+              [style.--route-accent-start]="routeColorStart"
+              [style.--route-accent-end]="routeColorEnd">
+        <div class="header-content">
+          @if (isRootPage) {
+            <button class="lh-btn-icon" (click)="toggleSidebar()">
+              <ion-icon name="menu-outline"></ion-icon>
+            </button>
+          } @else {
+            <button class="lh-btn-icon" (click)="goBack()">
+              <ion-icon name="arrow-back-outline"></ion-icon>
+            </button>
+          }
+          <h1 class="page-title">{{ pageTitle }}</h1>
+          <div class="header-chips">
+            @if (streakCount > 0) {
+              <span class="streak-chip" [style.--streak-color]="streakColor">
+                <ion-icon name="flame-outline"></ion-icon>
+                {{ streakCount }}
+              </span>
+            }
+            @if (level > 0) {
+              <span class="level-chip">Lv.{{ level }}</span>
+            }
+          </div>
+          <button class="avatar-btn" (click)="navigateTo('/profile')">
+            <span>{{ userInitial }}</span>
           </button>
-        } @else {
-          <button class="menu-btn" (click)="goBack()">
-            <ion-icon name="arrow-back-outline"></ion-icon>
-          </button>
-        }
-        <span class="header-title">Lighthouse</span>
+        </div>
       </header>
 
       <div class="sidebar-backdrop"
@@ -78,7 +96,7 @@
         </div>
       </aside>
 
-      <main class="coach-main">
+      <main class="coach-main" #coachMain>
         <ion-router-outlet></ion-router-outlet>
       </main>
 

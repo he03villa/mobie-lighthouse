@@ -1,0 +1,32 @@
+@if (visible) {
+  <div class="overlay-backdrop" (click)="onBackdropClick($event)">
+    <div class="celebration-card">
+      <div class="confetti-container">
+        <div class="confetti c1"></div>
+        <div class="confetti c2"></div>
+        <div class="confetti c3"></div>
+        <div class="confetti c4"></div>
+        <div class="confetti c5"></div>
+        <div class="confetti c6"></div>
+        <div class="confetti c7"></div>
+        <div class="confetti c8"></div>
+      </div>
+
+      <div class="checkmark-ring">
+        <ion-icon name="checkmark-circle"></ion-icon>
+      </div>
+
+      <h2 class="celebration-title">{{ message }}</h2>
+      @if (subtitle) {
+        <p class="celebration-subtitle">{{ subtitle }}</p>
+      }
+
+      <div class="xp-badge">
+        <span class="xp-amount">+{{ displayedXP }}</span>
+        <span class="xp-label">XP</span>
+      </div>
+
+      <p class="dismiss-hint">Toca para continuar</p>
+    </div>
+  </div>
+}

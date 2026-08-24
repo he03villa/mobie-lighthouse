@@ -18,43 +18,61 @@
 <ion-content [fullscreen]="true">
   <div class="page">
     <div class="surface-panel">
-      <ion-item>
-        <ion-label position="floating">ID del participante</ion-label>
-        <ion-input
-          [(ngModel)]="participantId"
-          placeholder="ID del participante"
-          [disabled]="loading"
-        ></ion-input>
-      </ion-item>
+      <div class="lh-field">
+        <label class="lh-field__label">ID del participante</label>
+        <div class="lh-field__control">
+          <ion-input
+            [(ngModel)]="participantId"
+            placeholder="UUID del participante"
+            [disabled]="loading"
+          ></ion-input>
+        </div>
+      </div>
 
-      <ion-item>
-        <ion-label position="floating">Contenido</ion-label>
-        <ion-textarea
-          [(ngModel)]="content"
-          placeholder="Escribe tu nota de campo..."
-          [rows]="5"
-          [disabled]="loading"
-        ></ion-textarea>
-      </ion-item>
+      <div class="lh-field">
+        <label class="lh-field__label">Contenido</label>
+        <div class="lh-field__control">
+          <ion-textarea
+            [(ngModel)]="content"
+            placeholder="Escribe tu nota de campo..."
+            [rows]="5"
+            [disabled]="loading"
+          ></ion-textarea>
+        </div>
+      </div>
 
-      <ion-item>
-        <ion-label>Visibilidad</ion-label>
-        <ion-select [(ngModel)]="visibility" [disabled]="loading">
-          <ion-select-option value="private">Privada</ion-select-option>
-          <ion-select-option value="shared_family">Compartir con familia</ion-select-option>
-          <ion-select-option value="shared_participant">Compartir con participante</ion-select-option>
-          <ion-select-option value="public">Pública</ion-select-option>
-        </ion-select>
-      </ion-item>
+      <div class="lh-field">
+        <label class="lh-field__label">Visibilidad</label>
+        <div class="lh-field__control">
+          <ion-select [(ngModel)]="visibility" [disabled]="loading">
+            <ion-select-option value="private">Privada</ion-select-option>
+            <ion-select-option value="shared_family">Compartir con familia</ion-select-option>
+            <ion-select-option value="shared_participant">Compartir con participante</ion-select-option>
+            <ion-select-option value="public">Publica</ion-select-option>
+          </ion-select>
+        </div>
+      </div>
 
-      <ion-item>
-        <ion-label position="floating">Fecha de sesión</ion-label>
-        <ion-input
-          type="date"
-          [(ngModel)]="sessionDate"
-          [disabled]="loading"
-        ></ion-input>
-      </ion-item>
+      <div class="lh-field">
+        <label class="lh-field__label">Fecha de sesion</label>
+        <div class="lh-field__control">
+          <ion-input
+            type="date"
+            [(ngModel)]="sessionDate"
+            [disabled]="loading"
+          ></ion-input>
+        </div>
+      </div>
+
+      <ion-button
+        expand="block"
+        class="save-btn"
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
+        Guardar nota
+      </ion-button>
     </div>
   </div>
 </ion-content>

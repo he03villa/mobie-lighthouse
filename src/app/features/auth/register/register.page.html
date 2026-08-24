@@ -15,68 +15,66 @@
 
       <!-- Step 1 -->
       <ng-container *ngIf="step === 1">
-        <div class="form-group">
-          <ion-item lines="none" class="auth-input">
-            <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Nombre completo</ion-label>
+        <div class="lh-field">
+          <label class="lh-field__label">Nombre completo</label>
+          <div class="lh-field__control">
             <ion-input
               [(ngModel)]="name"
               name="name"
               type="text"
               autocomplete="name"
+              placeholder="Tu nombre"
             ></ion-input>
-          </ion-item>
+          </div>
         </div>
 
-        <div class="form-group">
-          <ion-item lines="none" class="auth-input">
-            <ion-icon name="mail-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Correo electrónico</ion-label>
+        <div class="lh-field">
+          <label class="lh-field__label">Correo electronico</label>
+          <div class="lh-field__control">
             <ion-input
               [(ngModel)]="email"
               name="email"
               type="email"
               autocomplete="email"
+              placeholder="tu@email.com"
             ></ion-input>
-          </ion-item>
+          </div>
         </div>
 
-        <div class="form-group">
-          <ion-item lines="none" class="auth-input">
-            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Contraseña</ion-label>
+        <div class="lh-field">
+          <label class="lh-field__label">Contrasena</label>
+          <div class="lh-field__control">
             <ion-input
               [(ngModel)]="password"
               name="password"
               [type]="showPassword ? 'text' : 'password'"
               autocomplete="new-password"
+              placeholder="Minimo 8 caracteres"
             ></ion-input>
-            <ion-button
-              slot="end"
-              fill="clear"
-              type="button"
-              (click)="togglePassword()"
+            <button
               class="password-toggle"
+              type="button"
+              (click)="togglePassword(); $event.stopPropagation()"
+              tabindex="-1"
             >
               <ion-icon
                 [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
-                slot="icon-only"
               ></ion-icon>
-            </ion-button>
-          </ion-item>
+            </button>
+          </div>
         </div>
 
-        <div class="form-group">
-          <ion-item lines="none" class="auth-input">
-            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Confirmar contraseña</ion-label>
+        <div class="lh-field">
+          <label class="lh-field__label">Confirmar contrasena</label>
+          <div class="lh-field__control">
             <ion-input
               [(ngModel)]="confirmPassword"
               name="confirmPassword"
               [type]="showPassword ? 'text' : 'password'"
               autocomplete="new-password"
+              placeholder="Repite tu contrasena"
             ></ion-input>
-          </ion-item>
+          </div>
         </div>
 
         <ion-button
@@ -90,18 +88,17 @@
 
       <!-- Step 2 -->
       <ng-container *ngIf="step === 2">
-        <div class="form-group">
-          <ion-item lines="none" class="auth-input">
-            <ion-icon name="business-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Nombre de la Organización</ion-label>
+        <div class="lh-field">
+          <label class="lh-field__label">Nombre de la Organizacion</label>
+          <div class="lh-field__control">
             <ion-input
               [(ngModel)]="tenantName"
               name="tenantName"
               type="text"
               autocomplete="organization"
+              placeholder="Opcional — puedes agregarlo despues"
             ></ion-input>
-          </ion-item>
-          <ion-note class="field-hint">Opcional — puedes agregarlo después</ion-note>
+          </div>
         </div>
 
         <ion-button
@@ -122,7 +119,7 @@
           (click)="goBack()"
           [disabled]="loading"
         >
-          Atrás
+          Atras
         </ion-button>
       </ng-container>
     </form>
@@ -133,8 +130,8 @@
 
     <div class="auth-footer">
       <ion-text color="medium">
-        ¿Ya tienes una cuenta?
-        <a (click)="goToLogin()" class="auth-link">Iniciar sesión</a>
+        Ya tienes una cuenta?
+        <a (click)="goToLogin()" class="auth-link">Iniciar sesion</a>
       </ion-text>
     </div>
   </div>

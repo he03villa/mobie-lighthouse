@@ -10,7 +10,6 @@ import {
   IonBackButton,
   IonButtons,
   IonButton,
-  IonLabel,
   IonInput,
   IonTextarea,
   IonSpinner,
@@ -34,7 +33,6 @@ import { ToastService } from '../../../core/services/toast';
     IonBackButton,
     IonButtons,
     IonButton,
-    IonLabel,
     IonInput,
     IonTextarea,
     IonSpinner,
@@ -86,7 +84,9 @@ export class TaskFormComponent implements OnInit {
         this.isEdit ? 'Tarea actualizada' : 'Tarea creada',
         'success',
       );
-      this.nav.forward('/planning');
+      this.nav.root('/planning');
+    } catch {
+      await this.toast.show('Error al guardar la tarea', 'danger');
     } finally {
       this.loading = false;
     }
