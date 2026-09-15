@@ -1,4 +1,8 @@
-<ion-content [fullscreen]="true">
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <app-loading-spinner *ngIf="loading" message="Cargando panel..." />
 
   <div *ngIf="!loading" class="page">
@@ -88,6 +92,16 @@
           </div>
         </div>
       </div>
+
+      <h2 class="section-title">Resumen de Progreso (IA)</h2>
+      <div class="ai-summaries-scroll">
+        @for (p of participants.slice(0, 3); track p.id) {
+          <app-ai-summary-card
+            [participantId]="p.id"
+            [participantName]="p.first_name + ' ' + p.last_name"
+          ></app-ai-summary-card>
+        }
+      </div>
     </ng-container>
 
     <!-- PARTICIPANT DASHBOARD -->
@@ -141,7 +155,7 @@
           <div class="stat-icon">
             <ion-icon name="ribbon-outline"></ion-icon>
           </div>
-          <div class="stat-value">0%</div>
+          <div class="stat-value">{{ participantProgress }}%</div>
           <div class="stat-label">Progreso</div>
         </div>
       </div>
@@ -163,11 +177,28 @@
       </div>
 
       <h2 class="section-title">Actividad reciente</h2>
-      <app-empty-state
-        icon="document-text-outline"
-        title="Sin actividad reciente"
-        subtitle="Tus actividades aparecerán aquí"
-      ></app-empty-state>
+      @if (recentActivities.length > 0) {
+        <div class="recent-list">
+          @for (activity of recentActivities; track activity.id) {
+            <div class="recent-item surface-panel" (click)="navigateTo('/activities/' + activity.id)">
+              <div class="recent-icon">
+                <ion-icon [name]="getStatusIcon(activity.status)"></ion-icon>
+              </div>
+              <div class="recent-content">
+                <span class="recent-name">{{ activity.name }}</span>
+                <span class="recent-program">{{ activity.programName }}</span>
+              </div>
+              <ion-badge [color]="getStatusColor(activity.status)">{{ activity.status }}</ion-badge>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          icon="document-text-outline"
+          title="Sin actividad reciente"
+          subtitle="Tus actividades aparecerán aquí"
+        ></app-empty-state>
+      }
     </ng-container>
 
     <!-- PARENT DASHBOARD -->
@@ -195,7 +226,7 @@
         <app-empty-state
           icon="people-outline"
           title="Sin participantes"
-          subtitle="Aún no tienes hijos registrados"
+          subtitle="Contacta a tu coach para registrar a tu hijo"
         ></app-empty-state>
       </div>
       <div *ngIf="participants.length > 0" class="participant-grid">
@@ -211,6 +242,10 @@
 
       <h2 class="section-title">Acciones rapidas</h2>
       <div class="quick-actions">
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/activities')">
+          <ion-icon name="book-outline" slot="start"></ion-icon>
+          Actividades
+        </ion-button>
         <ion-button expand="block" fill="outline" (click)="navigateTo('/journal')">
           <ion-icon name="calendar-outline" slot="start"></ion-icon>
           Ver diario

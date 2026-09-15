@@ -1,0 +1,98 @@
+<ion-header class="lh-page-header lh-header-community" [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/community"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Publicacion</ion-title>
+    @if (canDeletePost()) {
+      <ion-buttons slot="end">
+        <ion-button (click)="deletePost()">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <app-loading-spinner message="Cargando publicacion..."></app-loading-spinner>
+  } @else if (post) {
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content pullingText="Arrastra para actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+    </ion-refresher>
+
+    <div class="page">
+      <div class="post-header">
+        <div class="author-info">
+          <div class="author-avatar">{{ post.author?.name?.charAt(0) ?? '?' }}</div>
+          <div class="author-details">
+            <span class="author-name">{{ post.author?.name ?? 'Desconocido' }}</span>
+            <span class="post-date">{{ formatTime(post.created_at) }}</span>
+          </div>
+        </div>
+        @if (post.category) {
+          <span class="category-badge">{{ post.category }}</span>
+        }
+      </div>
+
+      <h1 class="post-title">{{ post.title }}</h1>
+      <p class="post-content">{{ post.content }}</p>
+
+      <div class="reactions-bar">
+        <button class="reaction-btn" [class.active]="post.user_reaction === 'like'" (click)="toggleReaction('like')">
+          <ion-icon [name]="post.user_reaction === 'like' ? 'thumbs-up' : 'thumbs-up-outline'"></ion-icon>
+        </button>
+        <button class="reaction-btn" [class.active]="post.user_reaction === 'heart'" (click)="toggleReaction('heart')">
+          <ion-icon [name]="post.user_reaction === 'heart' ? 'heart' : 'heart-outline'"></ion-icon>
+        </button>
+        <button class="reaction-btn" [class.active]="post.user_reaction === 'helpful'" (click)="toggleReaction('helpful')">
+          <ion-icon [name]="post.user_reaction === 'helpful' ? 'bulb' : 'bulb-outline'"></ion-icon>
+        </button>
+      </div>
+
+      <div class="comments-section">
+        <h3 class="comments-title">Comentarios ({{ post.comments?.length ?? 0 }})</h3>
+
+        @if (post.comments && post.comments.length > 0) {
+          @for (comment of post.comments; track comment.id) {
+            <div class="comment-card">
+              <div class="comment-header">
+                <div class="comment-avatar">{{ comment.author?.name?.charAt(0) ?? '?' }}</div>
+                <div class="comment-details">
+                  <span class="comment-author">{{ comment.author?.name ?? 'Desconocido' }}</span>
+                  <span class="comment-date">{{ formatTime(comment.created_at) }}</span>
+                </div>
+                @if (canDeleteComment(comment)) {
+                  <button class="delete-comment-btn" (click)="deleteComment(comment)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                }
+              </div>
+              <p class="comment-content">{{ comment.content }}</p>
+            </div>
+          }
+        } @else {
+          <p class="no-comments">No hay comentarios aun</p>
+        }
+      </div>
+    </div>
+
+    <div class="comment-input-area">
+      <ion-input
+        [(ngModel)]="newComment"
+        placeholder="Escribe un comentario..."
+        [disabled]="sendingComment"
+        (keyup.enter)="addComment()"
+        class="comment-input"
+      ></ion-input>
+      <ion-button
+        class="send-btn"
+        (click)="addComment()"
+        [disabled]="!newComment.trim() || sendingComment"
+      >
+        Enviar
+      </ion-button>
+    </div>
+  }
+</ion-content>

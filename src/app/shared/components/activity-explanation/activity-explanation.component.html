@@ -1,0 +1,36 @@
+<ion-modal [isOpen]="isOpen" (didDismiss)="close()">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Explicacion de actividad</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="close()">
+          <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="explanation-page">
+      @if (loading) {
+        <div class="loading-state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <span>Generando explicacion...</span>
+        </div>
+      } @else if (error) {
+        <div class="error-state">
+          <p>No se pudo generar la explicacion</p>
+          <ion-button fill="outline" (click)="loadExplanation()">Reintentar</ion-button>
+        </div>
+      } @else if (explanation) {
+        <div class="explanation-content">
+          @if (activityName) {
+            <h2 class="activity-title">{{ activityName }}</h2>
+          }
+          <div class="explanation-text">
+            {{ explanation.explanation }}
+          </div>
+        </div>
+      }
+    </div>
+  </ion-content>
+</ion-modal>

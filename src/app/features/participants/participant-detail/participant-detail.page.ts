@@ -13,6 +13,9 @@ import {
   IonLabel,
   IonIcon,
   IonBadge,
+  IonProgressBar,
+  IonRefresher,
+  IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -22,15 +25,21 @@ import {
   trashOutline,
   addOutline,
   schoolOutline,
+  bookOutline,
+  checkmarkCircleOutline,
+  timeOutline,
+  closeCircleOutline,
 } from 'ionicons/icons';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular/standalone';
 import { ParticipantService } from '../../../core/services/participant';
 import { Participant } from '../../../core/models/participant';
+import { Enrollment } from '../../../core/models/enrollment';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { NavigationService } from '../../../core/services/navigation';
 import { ToastService } from '../../../core/services/toast';
+import { ActiveTenantService } from '../../../core/services/active-tenant';
 
 @Component({
   selector: 'app-participant-detail',
@@ -51,6 +60,9 @@ import { ToastService } from '../../../core/services/toast';
     IonLabel,
     IonIcon,
     IonBadge,
+    IonProgressBar,
+    IonRefresher,
+    IonRefresherContent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
   ],
@@ -61,9 +73,12 @@ export class ParticipantDetailPage {
   private nav = inject(NavigationService);
   private alertController = inject(AlertController);
   private toast = inject(ToastService);
+  private activeTenant = inject(ActiveTenantService);
 
   loading = true;
   participant: Participant | null = null;
+  isParent = false;
+  enrollments: Enrollment[] = [];
 
   constructor() {
     addIcons({
@@ -73,10 +88,15 @@ export class ParticipantDetailPage {
       trashOutline,
       addOutline,
       schoolOutline,
+      bookOutline,
+      checkmarkCircleOutline,
+      timeOutline,
+      closeCircleOutline,
     });
   }
 
   ionViewWillEnter(): void {
+    this.isParent = this.activeTenant.isParent();
     this.loadParticipant();
   }
 
@@ -86,8 +106,10 @@ export class ParticipantDetailPage {
     this.loading = true;
     try {
       this.participant = await this.participantService.getAsync(id);
+      this.enrollments = this.participant?.enrollments ?? [];
     } catch {
       this.participant = null;
+      this.enrollments = [];
     } finally {
       this.loading = false;
     }
@@ -122,5 +144,33 @@ export class ParticipantDetailPage {
       ],
     });
     await alert.present();
+  }
+
+  navigateToEnrollmentActivities(enrollment: Enrollment): void {
+    this.nav.forward(`/participants/${this.participant?.id}/enrollments/${enrollment.id}/activities`);
+  }
+
+  getEnrollmentStatusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      active: 'Activo',
+      completed: 'Completado',
+      dropped: 'Abandonado',
+    };
+    return labels[status] ?? status;
+  }
+
+  getEnrollmentStatusColor(status: string): string {
+    const colors: Record<string, string> = {
+      active: 'success',
+      completed: 'primary',
+      dropped: 'medium',
+    };
+    return colors[status] ?? 'medium';
+  }
+
+  handleRefresh(event: Event): void {
+    const refresher = event.target as HTMLIonRefresherElement;
+    this.loadParticipant();
+    setTimeout(() => refresher.complete(), 500);
   }
 }

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1d4d8f"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+    <linearGradient id="lightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bgGradient)" rx="128"/>
+  
+  <!-- Lighthouse Tower -->
+  <g transform="translate(512, 420)">
+    <!-- Tower Body -->
+    <path d="M-45,0 L-35,-180 L35,-180 L45,0 Z" fill="#ffffff" opacity="0.95"/>
+    
+    <!-- Tower Stripes -->
+    <path d="M-42,-40 L-39,-80 L39,-80 L42,-40 Z" fill="#1d4d8f" opacity="0.3"/>
+    <path d="M-36,-120 L-33,-160 L33,-160 L36,-120 Z" fill="#1d4d8f" opacity="0.3"/>
+    
+    <!-- Light Room -->
+    <rect x="-50" y="-200" width="100" height="30" rx="4" fill="#ffffff"/>
+    
+    <!-- Light Beam -->
+    <ellipse cx="0" cy="-185" rx="12" ry="12" fill="url(#lightGradient)"/>
+    
+    <!-- Light Rays -->
+    <g opacity="0.8">
+      <path d="M0,-185 L-180,-280 L-160,-240 L0,-175 Z" fill="url(#lightGradient)" opacity="0.6"/>
+      <path d="M0,-185 L180,-280 L160,-240 L0,-175 Z" fill="url(#lightGradient)" opacity="0.6"/>
+      <path d="M0,-185 L-120,-320 L-100,-280 L0,-175 Z" fill="url(#lightGradient)" opacity="0.4"/>
+      <path d="M0,-185 L120,-320 L100,-280 L0,-175 Z" fill="url(#lightGradient)" opacity="0.4"/>
+    </g>
+    
+    <!-- Base -->
+    <rect x="-55" y="-5" width="110" height="15" rx="3" fill="#ffffff" opacity="0.9"/>
+  </g>
+  
+  <!-- Waves -->
+  <g transform="translate(512, 520)" opacity="0.6">
+    <path d="M-300,0 Q-250,-20 -200,0 Q-150,20 -100,0 Q-50,-20 0,0 Q50,20 100,0 Q150,-20 200,0 Q250,20 300,0" 
+          fill="none" stroke="#ffffff" stroke-width="4" opacity="0.5"/>
+    <path d="M-280,30 Q-230,10 -180,30 Q-130,50 -80,30 Q-30,10 20,30 Q70,50 120,30 Q170,10 220,30 Q270,50 320,30" 
+          fill="none" stroke="#ffffff" stroke-width="3" opacity="0.4"/>
+  </g>
+  
+  <!-- Text: LIGHTHOUSE -->
+  <text x="512" y="680" 
+        font-family="'Segoe UI', 'Arial', 'Helvetica', sans-serif" 
+        font-size="72" 
+        font-weight="800" 
+        fill="#ffffff" 
+        text-anchor="middle" 
+        letter-spacing="8">
+    LIGHTHOUSE
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="512" y="740" 
+        font-family="'Segoe UI', 'Arial', 'Helvetica', sans-serif" 
+        font-size="28" 
+        font-weight="400" 
+        fill="#ffffff" 
+        text-anchor="middle" 
+        opacity="0.8"
+        letter-spacing="4">
+    GESTIÓN EDUCATIVA
+  </text>
+  
+  <!-- Decorative Stars -->
+  <g fill="#ffffff" opacity="0.4">
+    <circle cx="180" cy="180" r="3"/>
+    <circle cx="844" cy="220" r="2"/>
+    <circle cx="220" cy="320" r="2"/>
+    <circle cx="800" cy="160" r="3"/>
+    <circle cx="150" cy="260" r="2"/>
+    <circle cx="870" cy="300" r="2"/>
+  </g>
+</svg>

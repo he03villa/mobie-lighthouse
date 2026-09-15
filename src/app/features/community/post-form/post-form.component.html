@@ -1,0 +1,69 @@
+<ion-header class="lh-page-header lh-header-community" [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/community"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva publicacion</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="saving">
+        @if (saving) {
+          <ion-spinner name="crescent" slot="end"></ion-spinner>
+        }
+        Publicar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    <div class="surface-panel">
+      <div class="lh-field">
+        <label class="lh-field__label">Titulo</label>
+        <div class="lh-field__control">
+          <ion-input
+            [(ngModel)]="title"
+            placeholder="Titulo de tu publicacion"
+            [disabled]="saving"
+          ></ion-input>
+        </div>
+      </div>
+
+      <div class="lh-field">
+        <label class="lh-field__label">Contenido</label>
+        <div class="lh-field__control">
+          <ion-textarea
+            [(ngModel)]="content"
+            placeholder="Escribe tu publicacion..."
+            [rows]="8"
+            [disabled]="saving"
+          ></ion-textarea>
+        </div>
+      </div>
+
+      <div class="lh-field">
+        <label class="lh-field__label">Categoria (opcional)</label>
+        <div class="lh-field__control">
+          <ion-select [(ngModel)]="category" [disabled]="saving" placeholder="Seleccionar categoria">
+            <ion-select-option [value]="null">Sin categoria</ion-select-option>
+            <ion-select-option value="general">General</ion-select-option>
+            <ion-select-option value="recursos">Recursos</ion-select-option>
+            <ion-select-option value="dudas">Dudas</ion-select-option>
+          </ion-select>
+        </div>
+      </div>
+
+      <ion-button
+        expand="block"
+        class="save-btn"
+        (click)="save()"
+        [disabled]="saving"
+      >
+        @if (saving) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+        }
+        Publicar
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

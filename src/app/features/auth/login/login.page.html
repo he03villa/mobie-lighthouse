@@ -61,6 +61,8 @@
           </div>
         }
 
+        <a class="forgot-link" (click)="goToForgotPassword()">¿Olvidaste tu contraseña?</a>
+
         <button class="login-btn" type="submit" [disabled]="loading">
           @if (loading) {
             <ion-spinner name="crescent"></ion-spinner>
@@ -71,23 +73,6 @@
           }
         </button>
       </form>
-
-      <!--
-      <div class="divider">
-        <span>o</span>
-      </div>
-
-      <div class="social-row">
-        <button class="social-btn" type="button">
-          <ion-icon name="logo-google"></ion-icon>
-          <span>Google</span>
-        </button>
-        <button class="social-btn" type="button">
-          <ion-icon name="logo-apple"></ion-icon>
-          <span>Apple</span>
-        </button>
-      </div>
-      -->
     </div>
 
     <!-- Footer -->

@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-participants" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/participants"></ion-back-button>
@@ -8,6 +8,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <div class="page">
     @if (loading) {
       <app-loading-spinner message="Cargando participante..."></app-loading-spinner>
@@ -23,6 +27,29 @@
           }
         </div>
       </div>
+
+      @if (enrollments.length > 0) {
+        <h2 class="section-title">Programas e actividades</h2>
+        @for (enrollment of enrollments; track enrollment.id) {
+          <div class="enrollment-card surface-panel" (click)="navigateToEnrollmentActivities(enrollment)">
+            <div class="enrollment-header">
+              <div class="enrollment-info">
+                <ion-icon name="book-outline" class="enrollment-icon"></ion-icon>
+                <span class="enrollment-name">{{ enrollment.program?.name }}</span>
+              </div>
+              <ion-badge [color]="getEnrollmentStatusColor(enrollment.status)">
+                {{ getEnrollmentStatusLabel(enrollment.status) }}
+              </ion-badge>
+            </div>
+            @if (enrollment.progress) {
+              <div class="enrollment-progress">
+                <ion-progress-bar [value]="enrollment.progress.percentage / 100"></ion-progress-bar>
+                <span class="progress-text">{{ enrollment.progress.percentage }}% · {{ enrollment.progress.completed_activities }}/{{ enrollment.progress.total_activities }} actividades</span>
+              </div>
+            }
+          </div>
+        }
+      }
 
       @if (participant.guardians && participant.guardians.length > 0) {
         <h2 class="section-title">Tutores</h2>
@@ -60,24 +87,26 @@
         </div>
       }
 
-      @if (participant.groups && participant.groups.length === 0 && (!participant.guardians || participant.guardians.length === 0)) {
+      @if (participant.groups && participant.groups.length === 0 && (!participant.guardians || participant.guardians.length === 0) && enrollments.length === 0) {
         <app-empty-state
           icon="person-outline"
           title="Sin información adicional"
-          subtitle="Este participante no tiene tutores ni grupos asignados"
+          subtitle="Este participante no tiene tutores, grupos ni inscripciones"
         ></app-empty-state>
       }
 
-      <div class="action-buttons">
-        <ion-button expand="block" (click)="editParticipant()">
-          <ion-icon name="create-outline" slot="start"></ion-icon>
-          Editar participante
-        </ion-button>
-        <ion-button expand="block" fill="outline" color="danger" (click)="deleteParticipant()">
-          <ion-icon name="trash-outline" slot="start"></ion-icon>
-          Eliminar participante
-        </ion-button>
-      </div>
+      @if (!isParent) {
+        <div class="action-buttons">
+          <ion-button expand="block" (click)="editParticipant()">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar participante
+          </ion-button>
+          <ion-button expand="block" fill="outline" color="danger" (click)="deleteParticipant()">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Eliminar participante
+          </ion-button>
+        </div>
+      }
     } @else {
       <app-empty-state
         icon="person-outline"

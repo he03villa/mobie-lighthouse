@@ -1,0 +1,100 @@
+<ion-header class="lh-page-header lh-header-messages" [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mensajes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header class="lh-page-header lh-header-messages" collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Mensajes</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  @if (loading) {
+    <app-loading-spinner message="Cargando conversaciones..."></app-loading-spinner>
+  } @else if (conversations.length === 0) {
+    <app-empty-state
+      icon="chatbubbles-outline"
+      title="Sin conversaciones"
+      subtitle="Inicia tu primera conversación para comenzar a comunicarte"
+    >
+      <ion-button fill="outline" (click)="openNewConversation()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nueva conversación
+      </ion-button>
+    </app-empty-state>
+  } @else {
+    <div class="search-wrapper">
+      <ion-searchbar
+        class="searchbar-premium"
+        placeholder="Buscar conversaciones..."
+        [debounce]="300"
+        (ionInput)="onSearch($any($event).detail.value!)"
+      ></ion-searchbar>
+    </div>
+
+    <ion-segment [value]="filter" (ionChange)="onFilterChange($any($event).detail.value)" class="filter-segment">
+      <ion-segment-button value="all">Todos</ion-segment-button>
+      <ion-segment-button value="unread">No leídos</ion-segment-button>
+    </ion-segment>
+
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content pullingText="Arrastra para actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+    </ion-refresher>
+
+    @if (!hasResults) {
+      <div class="empty-filter-state">
+        <ion-icon name="search-outline"></ion-icon>
+        <p>Sin resultados</p>
+        <span>No se encontraron conversaciones</span>
+      </div>
+    } @else {
+      <ion-list lines="none" class="conversation-list">
+        @for (conversation of filteredConversations; track conversation.id) {
+          <ion-item-sliding #sliding>
+            <ion-item class="conversation-item" detail="false" (click)="openConversation(conversation)">
+              <ion-avatar slot="start">
+                <div class="avatar-circle" [style.background]="getAvatarColor(conversation)">
+                  {{ getOtherInitial(conversation) }}
+                </div>
+              </ion-avatar>
+              <ion-label>
+                <div class="conversation-header">
+                  <h2 class="conversation-name">{{ getDisplayName(conversation) }}</h2>
+                  <span class="conversation-time">{{ formatTime(conversation.updated_at) }}</span>
+                </div>
+                <div class="conversation-preview">
+                  @if (getTypingName(conversation.id); as typingName) {
+                    <span class="typing-indicator">escribiendo...</span>
+                  } @else {
+                    <p class="last-message">{{ getLastMessagePreview(conversation) }}</p>
+                  }
+                </div>
+              </ion-label>
+              @if (conversation.unread_count > 0) {
+                <ion-badge slot="end" class="unread-badge">{{ conversation.unread_count }}</ion-badge>
+              }
+              <ion-ripple-effect></ion-ripple-effect>
+            </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option color="primary" (click)="toggleRead(conversation, sliding)">
+                <ion-icon name="checkmark-done-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+              <ion-item-option color="danger" (click)="deleteConversation(conversation, sliding)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        }
+      </ion-list>
+    }
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openNewConversation()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -15,6 +15,10 @@ export class EnrollmentService {
     return firstValueFrom(this.api.get<ApiResponse<Enrollment[]>>(`/${BASE}`)).then(res => res.data);
   }
 
+  listByParticipantAsync(participantId: string): Promise<Enrollment[]> {
+    return firstValueFrom(this.api.get<ApiResponse<Enrollment[]>>(`/${BASE}?participant_id=${participantId}`)).then(res => res.data);
+  }
+
   getAsync(id: string): Promise<Enrollment> {
     return firstValueFrom(this.api.get<ApiResponse<Enrollment>>(`/${BASE}/${id}`)).then(res => res.data);
   }

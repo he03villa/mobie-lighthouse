@@ -1,29 +1,39 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-journal" [translucent]="true">
   <ion-toolbar>
     <ion-title>Diario</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-header class="lh-page-header lh-header-journal" collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Diario</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <ion-searchbar
+    placeholder="Buscar entradas..."
+    [value]="searchTerm"
+    (ionInput)="onSearch($event)"
+  ></ion-searchbar>
+
   <app-loading-spinner *ngIf="loading" message="Cargando entradas..."></app-loading-spinner>
 
   <ng-container *ngIf="!loading">
     <app-empty-state
-      *ngIf="entries.length === 0"
+      *ngIf="filteredEntries.length === 0"
       icon="document-text-outline"
       title="Sin entradas"
       subtitle="Comienza a escribir en tu diario"
     ></app-empty-state>
 
-    <ion-list *ngIf="entries.length > 0">
+    <ion-list *ngIf="filteredEntries.length > 0">
       <ion-item
-        *ngFor="let entry of entries"
+        *ngFor="let entry of filteredEntries"
         class="entry-item"
         (click)="navigateToDetail(entry.id)"
         button
@@ -44,4 +54,10 @@
       </ion-item>
     </ion-list>
   </ng-container>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="navigateToCreate()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

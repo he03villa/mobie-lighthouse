@@ -35,6 +35,7 @@ import { NavigationService } from '../../../core/services/navigation';
 import { ToastService } from '../../../core/services/toast';
 import { GamificationService } from '../../../core/services/gamification';
 import { FeedbackService } from '../../../core/services/feedback';
+import { ImageCompressService } from '../../../core/services/image-compress';
 import { CelebrationOverlayComponent } from '../../../shared/components/celebration-overlay/celebration-overlay.component';
 
 interface ActivityContext {
@@ -71,13 +72,16 @@ export class EvidenceSubmitComponent implements OnInit {
   private toast = inject(ToastService);
   private gamification = inject(GamificationService);
   protected feedback = inject(FeedbackService);
+  private imageCompress = inject(ImageCompressService);
 
   activityId = '';
   activityData: ActivityContext | null = null;
   moduleName = '';
   enrollmentId = '';
+  backHref = '/activities';
   textContent = '';
   files: File[] = [];
+  filePreview: string | null = null;
   loading = false;
   dragOver = false;
   showCelebration = false;
@@ -110,6 +114,10 @@ export class EvidenceSubmitComponent implements OnInit {
     this.activityData = state?.['activity'] ?? null;
     this.moduleName = state?.['moduleName'] ?? '';
     this.enrollmentId = state?.['enrollmentId'] ?? '';
+
+    if (this.enrollmentId) {
+      this.backHref = '/activities';
+    }
   }
 
   ionViewWillEnter(): void {
@@ -182,16 +190,41 @@ export class EvidenceSubmitComponent implements OnInit {
   onDrop(event: DragEvent): void {
     event.preventDefault();
     this.dragOver = false;
-    if (event.dataTransfer?.files) {
-      this.files = [...this.files, ...Array.from(event.dataTransfer.files)];
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.addFile(event.dataTransfer.files[0]);
     }
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.files = [...this.files, ...Array.from(input.files)];
+    if (input.files && input.files.length > 0) {
+      this.addFile(input.files[0]);
       input.value = '';
+    }
+  }
+
+  private async addFile(file: File): Promise<void> {
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      this.toast.show('El archivo excede 50MB', 'warning');
+      return;
+    }
+
+    let finalFile = file;
+    if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
+      finalFile = await this.imageCompress.compress(file);
+    }
+
+    this.files = [finalFile];
+
+    if (this.filePreview) {
+      URL.revokeObjectURL(this.filePreview);
+    }
+
+    if (finalFile.type.startsWith('image/')) {
+      this.filePreview = URL.createObjectURL(finalFile);
+    } else {
+      this.filePreview = null;
     }
   }
 

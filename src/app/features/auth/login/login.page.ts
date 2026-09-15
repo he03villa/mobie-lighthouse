@@ -61,6 +61,10 @@ export class LoginPage {
     this.nav.forward('/register');
   }
 
+  goToForgotPassword(): void {
+    this.nav.forward('/forgot-password');
+  }
+
   async login(): Promise<void> {
     this.errorMessage = '';
     this.loading = true;

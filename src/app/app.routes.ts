@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
   {
@@ -9,6 +10,18 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./features/auth/register/register.page').then(m => m.RegisterPage),
+  },
+  {
+    path: 'accept-invitation',
+    loadComponent: () => import('./features/auth/accept-invitation/accept-invitation.page').then(m => m.AcceptInvitationPage),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./features/auth/forgot-password/forgot-password.page').then(m => m.ForgotPasswordPage),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./features/auth/reset-password/reset-password.page').then(m => m.ResetPasswordPage),
   },
   {
     path: '',
@@ -59,6 +72,7 @@ export const routes: Routes = [
       },
       {
         path: 'planning',
+        canActivate: [roleGuard('owner', 'admin', 'coach')],
         children: [
           {
             path: '',
@@ -80,6 +94,7 @@ export const routes: Routes = [
       },
       {
         path: 'billing',
+        canActivate: [roleGuard('owner', 'admin')],
         loadComponent: () => import('./features/billing/billing-page/billing-page.page').then(m => m.BillingPagePage),
       },
       {
@@ -91,7 +106,12 @@ export const routes: Routes = [
           },
           {
             path: 'new',
+            canActivate: [roleGuard('owner', 'admin', 'coach')],
             loadComponent: () => import('./features/participants/participant-form/participant-form.component').then(m => m.ParticipantFormComponent),
+          },
+          {
+            path: ':id/enrollments/:enrollmentId/activities',
+            loadComponent: () => import('./features/activities/enrollment-activities/enrollment-activities.page').then(m => m.EnrollmentActivitiesPage),
           },
           {
             path: ':id',
@@ -112,6 +132,7 @@ export const routes: Routes = [
           },
           {
             path: 'new',
+            canActivate: [roleGuard('owner', 'admin', 'coach')],
             loadComponent: () => import('./features/programs/program-form/program-form.component').then(m => m.ProgramFormComponent),
           },
           {
@@ -135,6 +156,44 @@ export const routes: Routes = [
             path: 'new',
             loadComponent: () => import('./features/field-notes/field-note-form/field-note-form.component').then(m => m.FieldNoteFormComponent),
           },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/field-notes/field-note-form/field-note-form.component').then(m => m.FieldNoteFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/field-notes/field-note-detail/field-note-detail.page').then(m => m.FieldNoteDetailPage),
+          },
+        ],
+      },
+      {
+        path: 'messages',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/messaging/chat-list/chat-list.page').then(m => m.ChatListPage),
+          },
+          {
+            path: ':conversationId',
+            loadComponent: () => import('./features/messaging/chat-detail/chat-detail.page').then(m => m.ChatDetailPage),
+          },
+        ],
+      },
+      {
+        path: 'community',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/community/forum-list/forum-list.page').then(m => m.ForumListPage),
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/community/post-form/post-form.component').then(m => m.PostFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/community/post-detail/post-detail.page').then(m => m.PostDetailPage),
+          },
         ],
       },
       {
@@ -147,10 +206,5 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '',
-    pathMatch: 'full',
   },
 ];

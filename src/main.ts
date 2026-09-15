@@ -8,6 +8,8 @@ import { AppComponent } from './app/app.component';
 import { authInterceptor } from './app/core/interceptors/auth-interceptor';
 import { tenantInterceptor } from './app/core/interceptors/tenant-interceptor';
 import { refreshInterceptor } from './app/core/interceptors/refresh-interceptor';
+import { retryInterceptor } from './app/core/interceptors/retry-interceptor';
+import { cacheInterceptor } from './app/core/interceptors/cache-interceptor';
 import { errorInterceptor } from './app/core/interceptors/error-interceptor';
 
 bootstrapApplication(AppComponent, {
@@ -19,6 +21,8 @@ bootstrapApplication(AppComponent, {
       authInterceptor,
       tenantInterceptor,
       refreshInterceptor,
+      retryInterceptor,
+      cacheInterceptor,
       errorInterceptor,
     ])),
   ],

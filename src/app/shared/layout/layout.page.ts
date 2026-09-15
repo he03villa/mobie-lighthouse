@@ -20,6 +20,8 @@ import {
   arrowBackOutline,
   addOutline,
   flameOutline,
+  chatbubblesOutline,
+  peopleCircleOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth';
@@ -37,6 +39,8 @@ const ROOT_PATHS = [
   '/participants',
   '/programs',
   '/field-notes',
+  '/messages',
+  '/community',
   '/profile',
 ];
 
@@ -58,6 +62,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/participants': 'Participantes',
   '/programs': 'Programas',
   '/field-notes': 'Notas de Campo',
+  '/messages': 'Mensajes',
+  '/community': 'Comunidad',
   '/profile': 'Perfil',
 };
 
@@ -69,6 +75,8 @@ const ROUTE_COLORS: Record<string, [string, string]> = {
   '/activities': ['#0e8a5f', '#34c98e'],
   '/participants': ['#d97706', '#f59e0b'],
   '/field-notes': ['#0891b2', '#22d3ee'],
+  '/messages': ['#0891b2', '#06b6d4'],
+  '/community': ['#059669', '#10b981'],
   '/billing': ['#6366f1', '#8b5cf6'],
   '/profile': ['#667085', '#94a3b8'],
   '/login': ['#1d4d8f', '#4374ad'],
@@ -114,6 +122,8 @@ export class LayoutPage implements OnInit, OnDestroy, AfterViewInit {
   streakCount = 0;
   xpTotal = 0;
   level = 0;
+  pendingActivitiesCount = 0;
+  unreadMessagesCount = 0;
 
   constructor() {
     addIcons({
@@ -132,6 +142,8 @@ export class LayoutPage implements OnInit, OnDestroy, AfterViewInit {
       arrowBackOutline,
       addOutline,
       flameOutline,
+      chatbubblesOutline,
+      peopleCircleOutline,
     });
   }
 
@@ -182,7 +194,14 @@ export class LayoutPage implements OnInit, OnDestroy, AfterViewInit {
   get roleLabel(): string {
     const roles = this.activeTenant?.roles ?? [];
     const role = roles[0] ?? '';
-    return role.charAt(0).toUpperCase() + role.slice(1);
+    const labels: Record<string, string> = {
+      owner: 'Propietario',
+      admin: 'Administrador',
+      coach: 'Coach',
+      parent: 'Responsable',
+      participant: 'Participante',
+    };
+    return labels[role] ?? role.charAt(0).toUpperCase() + role.slice(1);
   }
 
   get streakColor(): string {
@@ -237,7 +256,11 @@ export class LayoutPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get showFab(): boolean {
-    return LIST_PATHS.includes(this.currentUrl);
+    return LIST_PATHS.includes(this.currentUrl) && this.isCoach;
+  }
+
+  get isOwner(): boolean {
+    return this.activeTenantService.isOwner();
   }
 
   fabAction(): void {

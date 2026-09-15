@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-journal" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/journal"></ion-back-button>
@@ -48,15 +48,19 @@
       </div>
     </div>
 
-    <div class="lh-field">
-      <label class="lh-field__label">ID del participante (opcional)</label>
-      <div class="lh-field__control">
-        <ion-input
-          [(ngModel)]="participantId"
-          placeholder="UUID del participante"
-        ></ion-input>
+    @if (participants.length > 0) {
+      <div class="lh-field">
+        <label class="lh-field__label">Participante (opcional)</label>
+        <div class="lh-field__control">
+          <ion-select [(ngModel)]="participantId" placeholder="Seleccionar participante">
+            <ion-select-option value="">Ninguno</ion-select-option>
+            @for (p of participants; track p.id) {
+              <ion-select-option [value]="p.id">{{ p.full_name }}</ion-select-option>
+            }
+          </ion-select>
+        </div>
       </div>
-    </div>
+    }
 
     <ion-button
       expand="block"

@@ -64,6 +64,7 @@ export class ActivityDetailPage {
 
   loading = true;
   submission: ActivitySubmission | null = null;
+  backHref = '/activities';
 
   constructor() {
     addIcons({
@@ -75,6 +76,11 @@ export class ActivityDetailPage {
   }
 
   ionViewWillEnter(): void {
+    const state = history.state;
+    if (state?.['participantId'] && state?.['enrollmentId']) {
+      this.backHref = `/participants/${state['participantId']}/enrollments/${state['enrollmentId']}/activities`;
+    }
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadSubmission(id);

@@ -1,0 +1,87 @@
+<div class="chat-page">
+  <div class="chat-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/messages" text=""></ion-back-button>
+    </ion-buttons>
+    <div class="header-info">
+      <div class="header-avatar" [style.background]="getAvatarColor()">
+        {{ getParticipantInitial() }}
+      </div>
+      <div class="header-text">
+        <span class="header-name">{{ getParticipantName() }}</span>
+        <span class="header-status">{{ getParticipantStatus() }}</span>
+      </div>
+    </div>
+    <ion-buttons slot="end">
+      <ion-button class="header-action">
+        <ion-icon name="call-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button class="header-action">
+        <ion-icon name="videocam-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </div>
+
+  @if (loading) {
+    <div class="chat-loading">
+      <app-loading-spinner message="Cargando mensajes..."></app-loading-spinner>
+    </div>
+  } @else {
+    <div class="chat-wrapper">
+      <div class="chat-container" #scrollContainer>
+        @if (messages.length === 0) {
+          <div class="empty-chat">
+            <div class="empty-chat__icon">
+              <ion-icon name="chatbubble-outline"></ion-icon>
+            </div>
+            <p class="empty-chat__title">No hay mensajes</p>
+            <span class="empty-chat__subtitle">Envía el primer mensaje para iniciar la conversación</span>
+          </div>
+        } @else {
+          <div class="messages-list">
+            @for (message of messages; track message.id) {
+              <app-chat-bubble
+                [message]="message"
+                [isOwn]="message.sender?.id == currentUserId"
+              ></app-chat-bubble>
+            }
+          </div>
+        }
+
+        @if (hasTypingUsers) {
+          <div class="typing-indicator">
+            <span class="typing-dots">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="typing-text">escribiendo...</span>
+          </div>
+        }
+      </div>
+
+      <div class="input-area">
+        <ion-button class="attach-btn" fill="clear">
+          <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="input-wrapper">
+          <ion-input
+            [(ngModel)]="newMessage"
+            placeholder="Escribe un mensaje..."
+            [disabled]="sending"
+            (ionInput)="onInputChange()"
+            (keyup.enter)="sendMessage()"
+            class="message-input"
+          ></ion-input>
+        </div>
+        @if (newMessage.trim()) {
+          <ion-button class="send-btn" (click)="sendMessage()" [disabled]="sending">
+            <ion-icon name="arrow-up" slot="icon-only"></ion-icon>
+          </ion-button>
+        } @else {
+          <ion-button class="mic-btn" fill="clear">
+            <ion-icon name="mic-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -18,6 +18,9 @@ import {
 } from '@ionic/angular/standalone';
 import { JournalService } from '../../../core/services/journal';
 import { JournalVisibility } from '../../../core/models/journal';
+import { ParticipantService } from '../../../core/services/participant';
+import { ActiveTenantService } from '../../../core/services/active-tenant';
+import { Participant } from '../../../core/models/participant';
 import { NavigationService } from '../../../core/services/navigation';
 import { ToastService } from '../../../core/services/toast';
 
@@ -51,19 +54,38 @@ export class JournalFormComponent implements OnInit {
   entryDate = '';
   participantId = '';
   loading = false;
+  participants: Participant[] = [];
+  isCoach = false;
 
   private route = inject(ActivatedRoute);
   private journalService = inject(JournalService);
+  private participantService = inject(ParticipantService);
+  private activeTenantService = inject(ActiveTenantService);
   private nav = inject(NavigationService);
   private toast = inject(ToastService);
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.isCoach = this.activeTenantService.isCoachOrAbove();
+    await this.loadParticipants();
+
     this.entryId = this.route.snapshot.paramMap.get('id');
     if (this.entryId) {
       this.isEdit = true;
-      this.loadEntry();
+      await this.loadEntry();
     } else {
       this.entryDate = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  async loadParticipants(): Promise<void> {
+    try {
+      if (this.isCoach) {
+        this.participants = await this.participantService.listAsync();
+      } else {
+        this.participants = await this.participantService.myParticipantsAsync();
+      }
+    } catch {
+      this.participants = [];
     }
   }
 

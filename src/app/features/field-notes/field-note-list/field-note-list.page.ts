@@ -7,15 +7,21 @@ import {
   IonTitle,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonNote,
   IonIcon,
   IonButton,
+  IonRefresher,
+  IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   addOutline,
   createOutline,
+  trashOutline,
   lockClosedOutline,
   peopleOutline,
   eyeOutline,
@@ -25,6 +31,8 @@ import { FieldNote, FieldNoteVisibility } from '../../../core/models/field-note'
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { NavigationService } from '../../../core/services/navigation';
+import { AlertController } from '@ionic/angular/standalone';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-field-note-list',
@@ -39,10 +47,15 @@ import { NavigationService } from '../../../core/services/navigation';
     IonTitle,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonNote,
     IonIcon,
     IonButton,
+    IonRefresher,
+    IonRefresherContent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
   ],
@@ -50,6 +63,8 @@ import { NavigationService } from '../../../core/services/navigation';
 export class FieldNoteListPage {
   private fieldNoteService = inject(FieldNoteService);
   private nav = inject(NavigationService);
+  private alertCtrl = inject(AlertController);
+  private toast = inject(ToastService);
 
   loading = true;
   notes: FieldNote[] = [];
@@ -58,6 +73,7 @@ export class FieldNoteListPage {
     addIcons({
       addOutline,
       createOutline,
+      trashOutline,
       lockClosedOutline,
       peopleOutline,
       eyeOutline,
@@ -77,6 +93,41 @@ export class FieldNoteListPage {
     } finally {
       this.loading = false;
     }
+  }
+
+  async handleRefresh(event: CustomEvent): Promise<void> {
+    await this.loadNotes();
+    (event.target as HTMLIonRefresherElement).complete();
+  }
+
+  openNote(note: FieldNote): void {
+    this.nav.forward(`/field-notes/${note.id}`);
+  }
+
+  editNote(note: FieldNote, slidingItem: IonItemSliding): void {
+    slidingItem.close();
+    this.nav.forward(`/field-notes/${note.id}/edit`);
+  }
+
+  async deleteNote(note: FieldNote, slidingItem: IonItemSliding): Promise<void> {
+    slidingItem.close();
+    const alert = await this.alertCtrl.create({
+      header: 'Eliminar nota',
+      message: 'Estas seguro de que deseas eliminar esta nota de campo?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: async () => {
+            await this.fieldNoteService.deleteAsync(note.id);
+            await this.toast.show('Nota eliminada', 'success');
+            this.notes = this.notes.filter(n => n.id !== note.id);
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   navigateToCreate(): void {

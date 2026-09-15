@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Nueva conversación</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        [strong]="true"
+        [disabled]="selectedIds.size === 0 || creating"
+        (click)="createConversation()"
+      >
+        {{ creating ? 'Creando...' : 'Iniciar' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="search-wrapper">
+    <ion-searchbar
+      placeholder="Buscar participante..."
+      [debounce]="300"
+      (ionInput)="onSearch($any($event).detail.value!)"
+    ></ion-searchbar>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando participantes...</p>
+    </div>
+  } @else if (filtered.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="chatbubble-outline"></ion-icon>
+      <p>No se encontraron participantes</p>
+    </div>
+  } @else {
+    <ion-list lines="none">
+      @for (participant of filtered; track participant.id; let i = $index) {
+        <ion-item
+          class="participant-item"
+          [class.selected]="isSelected(participant.id)"
+          (click)="toggleSelection(participant.id)"
+        >
+          <ion-avatar slot="start">
+            <div class="avatar-circle" [style.background]="getAvatarColor(i)">
+              {{ participant.full_name.charAt(0).toUpperCase() }}
+            </div>
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ participant.full_name }}</h2>
+          </ion-label>
+          <ion-checkbox
+            slot="end"
+            [checked]="isSelected(participant.id)"
+            (ionChange)="toggleSelection(participant.id)"
+            (click)="$event.stopPropagation()"
+          ></ion-checkbox>
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>

@@ -66,10 +66,12 @@
             <ion-icon name="calendar-outline"></ion-icon>
             <span>Planificacion</span>
           </a>
-          <a class="nav-item" routerLink="/billing" routerLinkActive="active" (click)="closeSidebar()">
-            <ion-icon name="wallet-outline"></ion-icon>
-            <span>Facturacion</span>
-          </a>
+          @if (isOwner) {
+            <a class="nav-item" routerLink="/billing" routerLinkActive="active" (click)="closeSidebar()">
+              <ion-icon name="wallet-outline"></ion-icon>
+              <span>Facturacion</span>
+            </a>
+          }
           <a class="nav-item" routerLink="/participants" routerLinkActive="active" (click)="closeSidebar()">
             <ion-icon name="people-outline"></ion-icon>
             <span>Participantes</span>
@@ -81,6 +83,14 @@
           <a class="nav-item" routerLink="/field-notes" routerLinkActive="active" (click)="closeSidebar()">
             <ion-icon name="create-outline"></ion-icon>
             <span>Notas de Campo</span>
+          </a>
+          <a class="nav-item" routerLink="/messages" routerLinkActive="active" (click)="closeSidebar()">
+            <ion-icon name="chatbubbles-outline"></ion-icon>
+            <span>Mensajes</span>
+          </a>
+          <a class="nav-item" routerLink="/community" routerLinkActive="active" (click)="closeSidebar()">
+            <ion-icon name="people-circle-outline"></ion-icon>
+            <span>Comunidad</span>
           </a>
         </nav>
 
@@ -109,29 +119,35 @@
       <ion-router-outlet></ion-router-outlet>
 
       <nav class="bottom-nav">
-        <button class="nav-btn" (click)="navigateTo('/dashboard')">
+        <button class="nav-btn" [class.active]="currentUrl === '/dashboard'" (click)="navigateTo('/dashboard')">
           <ion-icon name="home-outline"></ion-icon>
           <span>Inicio</span>
         </button>
-        <button class="nav-btn" (click)="navigateTo('/activities')">
+        <button class="nav-btn" [class.active]="currentUrl.startsWith('/activities')" (click)="navigateTo('/activities')">
           <ion-icon name="list-outline"></ion-icon>
+          @if (pendingActivitiesCount > 0) {
+            <span class="nav-badge">{{ pendingActivitiesCount }}</span>
+          }
           <span>Actividades</span>
         </button>
-        <button class="nav-btn" (click)="navigateTo('/journal')">
+        <button class="nav-btn" [class.active]="currentUrl.startsWith('/journal')" (click)="navigateTo('/journal')">
           <ion-icon name="document-text-outline"></ion-icon>
           <span>Diario</span>
         </button>
-        <button class="nav-btn" (click)="navigateTo('/planning')">
-          <ion-icon name="calendar-outline"></ion-icon>
-          <span>Planificacion</span>
+        <button class="nav-btn" [class.active]="currentUrl.startsWith('/messages')" (click)="navigateTo('/messages')">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          @if (unreadMessagesCount > 0) {
+            <span class="nav-badge">{{ unreadMessagesCount }}</span>
+          }
+          <span>Mensajes</span>
         </button>
-        <button class="nav-btn" (click)="navigateTo('/profile')">
+        <button class="nav-btn" [class.active]="currentUrl.startsWith('/community')" (click)="navigateTo('/community')">
+          <ion-icon name="people-circle-outline"></ion-icon>
+          <span>Comunidad</span>
+        </button>
+        <button class="nav-btn" [class.active]="currentUrl === '/profile'" (click)="navigateTo('/profile')">
           <ion-icon name="person-outline"></ion-icon>
           <span>Perfil</span>
-        </button>
-        <button class="nav-btn logout-btn" (click)="logout()">
-          <ion-icon name="log-out-outline"></ion-icon>
-          <span>Salir</span>
         </button>
       </nav>
     </div>

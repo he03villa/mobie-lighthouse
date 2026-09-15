@@ -1,0 +1,106 @@
+<ion-content [fullscreen]="true">
+  <div class="login-page">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="brand-icon-wrap">
+          <ion-icon name="flash-outline" class="brand-icon"></ion-icon>
+        </div>
+        <h1 class="brand-name">Lighthouse</h1>
+        <p class="brand-tagline">Aceptar Invitación</p>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      @if (!isValidToken) {
+        <div class="error-banner">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+      } @else {
+        <h2 class="form-card__title">Bienvenido</h2>
+        <p class="form-card__subtitle">Establece tu contraseña para acceder a la plataforma</p>
+
+        <form (ngSubmit)="accept()">
+          <div class="lh-field">
+            <label class="lh-field__label">Nombre completo</label>
+            <div class="lh-field__control">
+              <ion-input
+                type="text"
+                [(ngModel)]="name"
+                name="name"
+                autocomplete="name"
+                placeholder="Tu nombre"
+              ></ion-input>
+            </div>
+          </div>
+
+          <div class="lh-field">
+            <label class="lh-field__label">Contraseña</label>
+            <div class="lh-field__control">
+              <ion-input
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                name="password"
+                autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+              ></ion-input>
+              <button
+                class="password-toggle"
+                type="button"
+                (click)="togglePassword(); $event.stopPropagation()"
+                tabindex="-1"
+              >
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                ></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="lh-field">
+            <label class="lh-field__label">Confirmar contraseña</label>
+            <div class="lh-field__control">
+              <ion-input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                autocomplete="new-password"
+                placeholder="Repite tu contraseña"
+              ></ion-input>
+              <button
+                class="password-toggle"
+                type="button"
+                (click)="toggleConfirmPassword(); $event.stopPropagation()"
+                tabindex="-1"
+              >
+                <ion-icon
+                  [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+                ></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          @if (errorMessage) {
+            <div class="error-banner">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              <span>{{ errorMessage }}</span>
+            </div>
+          }
+
+          <button class="login-btn" type="submit" [disabled]="loading">
+            @if (loading) {
+              <ion-spinner name="crescent"></ion-spinner>
+              <span>Creando cuenta...</span>
+            } @else {
+              <span>Aceptar Invitación</span>
+              <ion-icon name="checkmark-outline"></ion-icon>
+            }
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</ion-content>

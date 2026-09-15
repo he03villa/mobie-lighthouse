@@ -1,7 +1,7 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-activities" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/activities" text=""></ion-back-button>
+      <ion-back-button [defaultHref]="backHref" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>Detalle de Actividad</ion-title>
     @if (submission?.status === 'pending' || submission?.status === 'rejected') {

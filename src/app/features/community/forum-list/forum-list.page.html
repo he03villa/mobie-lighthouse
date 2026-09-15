@@ -1,0 +1,72 @@
+<ion-header class="lh-page-header lh-header-community" [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Comunidad</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header class="lh-page-header lh-header-community" collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Comunidad</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando publicaciones..."></app-loading-spinner>
+    } @else if (filteredPosts.length === 0) {
+      <app-empty-state
+        icon="people-circle-outline"
+        title="Sin publicaciones"
+        subtitle="Sé el primero en compartir algo con la comunidad"
+      ></app-empty-state>
+    } @else {
+      <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content pullingText="Arrastra para actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+      </ion-refresher>
+
+      <ion-searchbar
+        placeholder="Buscar publicaciones..."
+        [value]="searchTerm"
+        (ionInput)="onSearch($event)"
+      ></ion-searchbar>
+
+      <div class="category-chips">
+        <ion-chip [class.selected]="selectedCategory === null" (click)="filterByCategory(null)">Todos</ion-chip>
+        <ion-chip [class.selected]="selectedCategory === 'general'" (click)="filterByCategory('general')">General</ion-chip>
+        <ion-chip [class.selected]="selectedCategory === 'recursos'" (click)="filterByCategory('recursos')">Recursos</ion-chip>
+        <ion-chip [class.selected]="selectedCategory === 'dudas'" (click)="filterByCategory('dudas')">Dudas</ion-chip>
+      </div>
+
+      <div class="posts-list">
+        @for (post of filteredPosts; track post.id) {
+          <ion-card class="post-card" [class.pinned]="post.pinned" (click)="openPost(post)">
+            <ion-card-content>
+              @if (post.pinned) {
+                <div class="pinned-badge">
+                  <ion-icon name="pin-outline"></ion-icon>
+                  Fijado
+                </div>
+              }
+              <h2 class="post-title">{{ post.title }}</h2>
+              <p class="post-preview">{{ truncate(post.content, 120) }}</p>
+              <div class="post-meta">
+                <div class="author">
+                  <div class="author-avatar">{{ post.author?.name?.charAt(0) ?? '?' }}</div>
+                  <span class="author-name">{{ post.author?.name ?? 'Desconocido' }}</span>
+                </div>
+                <div class="post-stats">
+                  <span class="stat">
+                    <ion-icon name="chatbubble-outline"></ion-icon>
+                    {{ post.comments_count }}
+                  </span>
+                  <span class="time">{{ formatTime(post.created_at) }}</span>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+  </div>
+</ion-content>

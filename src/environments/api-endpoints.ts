@@ -7,6 +7,9 @@ export const API_ENDPOINTS = {
       refresh: 'refresh',
       me: 'me',
       logout: 'logout',
+      acceptInvitation: 'accept-invitation',
+      forgotPassword: 'forgot-password',
+      resetPassword: 'reset-password',
     },
   },
   tenants: {
@@ -67,6 +70,31 @@ export const API_ENDPOINTS = {
       cancel: 'cancel',
       portal: 'portal',
       invoices: 'invoices',
+    },
+  },
+  conversations: {
+    name: 'conversations',
+    services: {
+      messages: 'messages',
+      read: 'read',
+      typing: 'typing',
+    },
+  },
+  forum: {
+    name: 'forum',
+    services: {
+      posts: 'posts',
+      comments: 'comments',
+      reactions: 'reactions',
+    },
+  },
+  ai: {
+    name: 'ai',
+    services: {
+      summarizeProgress: 'summarize-progress',
+      suggestActivities: 'suggest-activities',
+      explainActivity: 'explain-activity',
+      generateDraft: 'generate-draft',
     },
   },
 };

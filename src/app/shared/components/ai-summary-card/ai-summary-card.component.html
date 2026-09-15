@@ -1,0 +1,23 @@
+<ion-card class="summary-card" (click)="goToParticipant()">
+  <ion-card-content>
+    @if (loading) {
+      <div class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Generando resumen...</span>
+      </div>
+    } @else if (error) {
+      <div class="error-state">
+        <p>No se pudo generar el resumen</p>
+      </div>
+    } @else if (summary) {
+      <div class="summary-header">
+        <div class="participant-avatar">{{ participantName.charAt(0) }}</div>
+        <div class="participant-info">
+          <h3>{{ participantName }}</h3>
+          <span class="ai-badge">IA</span>
+        </div>
+      </div>
+      <p class="summary-text">{{ summary.summary }}</p>
+    }
+  </ion-card-content>
+</ion-card>

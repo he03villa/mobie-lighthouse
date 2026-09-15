@@ -1,0 +1,47 @@
+<ion-header class="lh-page-header lh-header-fieldnotes" [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/field-notes"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editNote()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteNote()">
+        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-loading-spinner *ngIf="loading" message="Cargando nota..."></app-loading-spinner>
+
+  <div *ngIf="!loading && note" class="page">
+    <div class="detail-date">{{ formatDate(note.session_date || note.created_at) }}</div>
+
+    <div class="detail-visibility">
+      <ion-badge [class]="'visibility-badge visibility-' + note.visibility">
+        <ion-icon [name]="getVisibilityIcon()"></ion-icon>
+        {{ getVisibilityLabel() }}
+      </ion-badge>
+    </div>
+
+    <div class="detail-author" *ngIf="note.author">
+      <span class="author-label">Autor</span>
+      <span class="author-name">{{ note.author.name }}</span>
+    </div>
+
+    <ion-card class="detail-card">
+      <ion-card-content>
+        <p class="detail-content">{{ note.content }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="detail-participant" *ngIf="note.participant">
+      <span class="participant-label">Participante</span>
+      <span class="participant-name">{{ note.participant.full_name }}</span>
+    </div>
+  </div>
+</ion-content>

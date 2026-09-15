@@ -1,11 +1,11 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-fieldnotes" [translucent]="true">
   <ion-toolbar>
     <ion-title>Notas de Campo</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header class="lh-page-header lh-header-fieldnotes" collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Notas de Campo</ion-title>
     </ion-toolbar>
@@ -26,25 +26,40 @@
         </ion-button>
       </app-empty-state>
     } @else {
+      <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content pullingText="Arrastra para actualizar" refreshingText="Actualizando..."></ion-refresher-content>
+      </ion-refresher>
+
       <ion-list>
         @for (note of notes; track note.id) {
-          <ion-item class="note-item" detail="false">
-            <ion-icon name="create-outline" slot="start"></ion-icon>
-            <ion-label>
-              <h2>{{ note.participant.full_name }}</h2>
-              <p class="note-content">{{ note.content | slice:0:100 }}{{ note.content.length > 100 ? '...' : '' }}</p>
-              <p class="note-meta text-muted">
-                @if (note.session_date) {
-                  {{ formatDate(note.session_date) }}
-                } @else if (note.created_at) {
-                  {{ formatDate(note.created_at) }}
-                }
-              </p>
-            </ion-label>
-            <ion-note slot="end">
-              <ion-icon [name]="getVisibilityIcon(note.visibility)" color="medium"></ion-icon>
-            </ion-note>
-          </ion-item>
+          <ion-item-sliding #sliding>
+            <ion-item class="note-item" detail="false" (click)="openNote(note)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              <ion-label>
+                <h2>{{ note.participant.full_name }}</h2>
+                <p class="note-content">{{ note.content | slice:0:100 }}{{ note.content.length > 100 ? '...' : '' }}</p>
+                <p class="note-meta text-muted">
+                  @if (note.session_date) {
+                    {{ formatDate(note.session_date) }}
+                  } @else if (note.created_at) {
+                    {{ formatDate(note.created_at) }}
+                  }
+                </p>
+              </ion-label>
+              <ion-note slot="end">
+                <ion-icon [name]="getVisibilityIcon(note.visibility)" color="medium"></ion-icon>
+              </ion-note>
+            </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option color="primary" (click)="editNote(note, sliding)">
+                <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+              <ion-item-option color="danger" (click)="deleteNote(note, sliding)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
         }
       </ion-list>
     }

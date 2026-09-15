@@ -1,0 +1,14 @@
+:host { display: block; }
+
+.page {
+  padding: 16px;
+}
+
+.save-btn {
+  margin-top: 24px;
+  --background: var(--lh-primary-700);
+  --border-radius: 14px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 15px;
+}

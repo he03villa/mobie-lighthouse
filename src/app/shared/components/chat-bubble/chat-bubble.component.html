@@ -1,0 +1,16 @@
+<div class="bubble-wrapper" [class.own]="isOwn" [class.other]="!isOwn">
+  <div class="bubble">
+    @if (!isOwn) {
+      <span class="sender-name">{{ senderName }}</span>
+    }
+    <div class="bubble-content">
+      <p class="message-text">{{ message.content }}</p>
+      <div class="message-meta">
+        <span class="time">{{ formattedTime }}</span>
+        @if (isOwn) {
+          <ion-icon [name]="isRead ? 'checkmark-done-outline' : 'checkmark-outline'" class="read-icon"></ion-icon>
+        }
+      </div>
+    </div>
+  </div>
+</div>

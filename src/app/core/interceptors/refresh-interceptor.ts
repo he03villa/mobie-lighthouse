@@ -4,7 +4,7 @@ import { catchError, filter, finalize, from, switchMap, take, throwError } from 
 import { AuthService } from '../services/auth';
 import { NavigationService } from '../services/navigation';
 
-const SKIP_AUTH_URLS = ['/auth/login', '/auth/register', '/auth/refresh'];
+const SKIP_AUTH_URLS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/accept-invitation'];
 let isRefreshing = false;
 let refreshTokenValue: string | null = null;
 
@@ -31,7 +31,7 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
             return next(cloned);
           }),
           catchError(() => {
-            authService.clearSession();
+            from(authService.clearSession()).subscribe();
             nav.navigateByUrl('/login');
             return throwError(() => error);
           }),
@@ -49,7 +49,7 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
         }),
         catchError(refreshError => {
           refreshTokenValue = null;
-          authService.clearSession();
+          from(authService.clearSession()).subscribe();
           nav.navigateByUrl('/login');
           return throwError(() => refreshError);
         }),

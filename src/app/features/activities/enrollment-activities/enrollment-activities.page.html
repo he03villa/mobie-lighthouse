@@ -1,0 +1,73 @@
+<ion-header class="lh-page-header lh-header-activities" [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/participants/' + participantId"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Actividades</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page">
+    @if (loading) {
+      <app-loading-spinner message="Cargando actividades..."></app-loading-spinner>
+    } @else if (enrollment && program) {
+      <div class="enrollment-header surface-panel">
+        <div class="enrollment-info">
+          <h2>{{ program.name }}</h2>
+          <ion-badge [color]="enrollment.status === 'active' ? 'success' : 'medium'">
+            {{ enrollment.status === 'active' ? 'Activo' : enrollment.status === 'completed' ? 'Completado' : 'Abandonado' }}
+          </ion-badge>
+        </div>
+        @if (enrollment.progress) {
+          <div class="enrollment-progress">
+            <ion-progress-bar [value]="enrollment.progress.percentage / 100"></ion-progress-bar>
+            <span class="progress-text">{{ enrollment.progress.percentage }}% · {{ enrollment.progress.completed_activities }}/{{ enrollment.progress.total_activities }} actividades completadas</span>
+          </div>
+        }
+      </div>
+
+      @for (group of moduleGroups; track group.name) {
+        <div class="module-section">
+          <div class="module-header">
+            <h3 class="module-name">{{ group.name }}</h3>
+            <span class="module-count">{{ group.completedCount }}/{{ group.totalCount }}</span>
+          </div>
+
+          @for (activity of group.activities; track activity.activityId) {
+            <div class="activity-card surface-panel" (click)="navigateToActivity(activity)">
+              <div class="activity-icon">
+                <ion-icon [name]="getActivityTypeIcon(activity.type)"></ion-icon>
+              </div>
+              <div class="activity-content">
+                <span class="activity-name">{{ activity.name }}</span>
+                <ion-badge [color]="getStatusColor(activity.status)" class="status-badge">
+                  <ion-icon [name]="getStatusIcon(activity.status)"></ion-icon>
+                  {{ getStatusLabel(activity.status) }}
+                </ion-badge>
+              </div>
+              <ion-icon name="chevron-forward-outline" class="activity-arrow"></ion-icon>
+            </div>
+          }
+        </div>
+      }
+
+      @if (moduleGroups.length === 0) {
+        <app-empty-state
+          icon="school-outline"
+          title="Sin actividades"
+          subtitle="Este programa no tiene actividades configuradas"
+        ></app-empty-state>
+      }
+    } @else {
+      <app-empty-state
+        icon="school-outline"
+        title="Inscripción no encontrada"
+      ></app-empty-state>
+    }
+  </div>
+</ion-content>

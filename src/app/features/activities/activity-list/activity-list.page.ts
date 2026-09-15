@@ -31,6 +31,7 @@ import { SubmissionService } from '../../../core/services/submission';
 import { EnrollmentService } from '../../../core/services/enrollment';
 import { ProgramService } from '../../../core/services/program';
 import { ActiveTenantService } from '../../../core/services/active-tenant';
+import { ParticipantService } from '../../../core/services/participant';
 import { ActivitySubmission } from '../../../core/models/submission';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -82,10 +83,12 @@ export class ActivityListPage {
   private enrollmentService = inject(EnrollmentService);
   private programService = inject(ProgramService);
   private activeTenant = inject(ActiveTenantService);
+  private participantService = inject(ParticipantService);
   private nav = inject(NavigationService);
 
   loading = true;
   isParticipant = false;
+  isParent = false;
 
   programName = '';
   programId = '';
@@ -116,6 +119,7 @@ export class ActivityListPage {
 
   ionViewWillEnter(): void {
     this.isParticipant = this.activeTenant.isParticipant();
+    this.isParent = this.activeTenant.isParent();
     this.loadActivities();
   }
 
@@ -124,6 +128,8 @@ export class ActivityListPage {
     try {
       if (this.isParticipant) {
         await this.loadParticipantActivities();
+      } else if (this.isParent) {
+        await this.loadParentActivities();
       } else {
         await this.loadCoachActivities();
       }
@@ -195,6 +201,70 @@ export class ActivityListPage {
       this.completedActivities = completed;
       this.progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
     }
+  }
+
+  private async loadParentActivities(): Promise<void> {
+    const children = await this.participantService.myParticipantsAsync();
+    const allEnrollments = [];
+    for (const child of children) {
+      const enrollments = await this.enrollmentService.listByParticipantAsync(child.id);
+      allEnrollments.push(...enrollments);
+    }
+    const submissionsList = await this.submissionService.listAsync();
+
+    let total = 0;
+    let completed = 0;
+    const allGroups: ModuleGroup[] = [];
+
+    for (const enrollment of allEnrollments) {
+      if (!enrollment.program) continue;
+
+      const program = await this.programService.getAsync(enrollment.program.id);
+
+      if (program.modules) {
+        for (const mod of program.modules) {
+          const activities: ActivityItem[] = [];
+          let modCompleted = 0;
+
+          if (mod.activities) {
+            for (const act of mod.activities) {
+              const submission = submissionsList.find(
+                s => s.activity.id === act.id && s.enrollment.id === enrollment.id,
+              );
+              const status = submission ? submission.status : 'pending';
+              if (status === 'approved' || status === 'reviewed') modCompleted++;
+
+              activities.push({
+                id: submission?.id ?? act.id,
+                name: act.name,
+                description: act.description ?? undefined,
+                type: act.type,
+                status,
+                submissionId: submission?.id,
+                activityId: act.id,
+                moduleName: mod.name,
+                enrollmentId: enrollment.id,
+              });
+            }
+          }
+
+          total += activities.length;
+          completed += modCompleted;
+
+          allGroups.push({
+            name: `${program.name} - ${mod.name}`,
+            activities,
+            completedCount: modCompleted,
+            totalCount: activities.length,
+          });
+        }
+      }
+    }
+
+    this.moduleGroups = allGroups;
+    this.totalActivities = total;
+    this.completedActivities = completed;
+    this.progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
   }
 
   private async loadCoachActivities(): Promise<void> {

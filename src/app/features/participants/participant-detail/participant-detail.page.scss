@@ -53,6 +53,46 @@ ion-icon[slot='start'] {
   color: var(--lh-primary-700);
 }
 
+.enrollment-card {
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.enrollment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.enrollment-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.enrollment-icon {
+  color: var(--lh-primary-700);
+  font-size: 18px;
+}
+
+.enrollment-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--lh-text);
+}
+
+.enrollment-progress {
+  margin-top: 8px;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: var(--lh-text-secondary);
+  margin-top: 4px;
+  display: block;
+}
+
 .action-buttons {
   display: flex;
   flex-direction: column;

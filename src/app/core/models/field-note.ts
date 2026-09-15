@@ -21,3 +21,16 @@ export interface FieldNoteRequest {
   visibility?: FieldNoteVisibility;
   session_date?: string | null;
 }
+
+export interface FieldNoteUpdateRequest {
+  content?: string;
+  visibility?: FieldNoteVisibility;
+  session_date?: string | null;
+}
+
+export const FIELD_NOTE_VISIBILITY_LABELS: Record<FieldNoteVisibility, string> = {
+  private: 'Privada',
+  shared_family: 'Compartida con la familia',
+  shared_participant: 'Compartida con el participante',
+  public: 'Publica',
+};

@@ -1,3 +1,4 @@
+import { Enrollment } from './enrollment';
 import { Group } from './group';
 
 export interface Participant {
@@ -11,6 +12,7 @@ export interface Participant {
   created_at?: string | null;
   guardians?: Guardian[];
   groups?: Group[];
+  enrollments?: Enrollment[];
 }
 
 export interface Guardian {

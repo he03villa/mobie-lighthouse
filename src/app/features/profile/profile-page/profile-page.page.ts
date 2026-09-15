@@ -11,6 +11,7 @@ import {
   AlertController,
   NavController,
 } from '@ionic/angular/standalone';
+import { Preferences } from '@capacitor/preferences';
 import { addIcons } from 'ionicons';
 import {
   personOutline,
@@ -77,7 +78,7 @@ export class ProfilePagePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userSub = this.authService.user$.subscribe((u) => (this.user = u));
     this.tenantSub = this.activeTenantService.activeTenant$.subscribe(
       (t) => (this.tenant = t)
@@ -90,6 +91,10 @@ export class ProfilePagePage implements OnInit, OnDestroy {
     this.reminder.init().then(() => {
       this.reminderEnabled = this.reminder.isEnabled();
     });
+
+    const { value } = await Preferences.get({ key: 'darkMode' });
+    this.darkMode = value === 'true';
+    document.body.classList.toggle('dark', this.darkMode);
   }
 
   ngOnDestroy(): void {
@@ -97,9 +102,10 @@ export class ProfilePagePage implements OnInit, OnDestroy {
     this.tenantSub?.unsubscribe();
   }
 
-  toggleDarkMode(): void {
+  async toggleDarkMode(): Promise<void> {
     this.darkMode = !this.darkMode;
     document.body.classList.toggle('dark', this.darkMode);
+    await Preferences.set({ key: 'darkMode', value: String(this.darkMode) });
   }
 
   async toggleReminder(): Promise<void> {

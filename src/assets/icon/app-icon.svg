@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1d4d8f"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bgGradient)" rx="220"/>
+  
+  <!-- Lighthouse Tower - Simplified -->
+  <g transform="translate(512, 480)">
+    <!-- Tower Body -->
+    <path d="M-60,0 L-45,-250 L45,-250 L60,0 Z" fill="#ffffff"/>
+    
+    <!-- Tower Windows -->
+    <rect x="-15" y="-180" width="30" height="40" rx="4" fill="#1d4d8f" opacity="0.4"/>
+    <rect x="-12" y="-100" width="24" height="30" rx="3" fill="#1d4d8f" opacity="0.4"/>
+    
+    <!-- Light Room -->
+    <rect x="-70" y="-280" width="140" height="40" rx="6" fill="#ffffff"/>
+    
+    <!-- Light Beacon -->
+    <circle cx="0" cy="-260" r="20" fill="#fbbf24"/>
+    <circle cx="0" cy="-260" r="12" fill="#ffffff"/>
+    
+    <!-- Base -->
+    <rect x="-75" y="-10" width="150" height="20" rx="4" fill="#ffffff"/>
+  </g>
+  
+  <!-- Light Rays - Simple -->
+  <g transform="translate(512, 220)" opacity="0.7">
+    <path d="M0,0 L-200,-150 L-160,-120 L0,0 Z" fill="#fbbf24" opacity="0.5"/>
+    <path d="M0,0 L200,-150 L160,-120 L0,0 Z" fill="#fbbf24" opacity="0.5"/>
+    <path d="M0,0 L-120,-200 L-90,-160 L0,0 Z" fill="#fbbf24" opacity="0.3"/>
+    <path d="M0,0 L120,-200 L90,-160 L0,0 Z" fill="#fbbf24" opacity="0.3"/>
+  </g>
+  
+  <!-- Waves -->
+  <g transform="translate(512, 540)" opacity="0.5">
+    <path d="M-250,0 Q-200,-25 -150,0 Q-100,25 -50,0 Q0,-25 50,0 Q100,25 150,0 Q200,-25 250,0" 
+          fill="none" stroke="#ffffff" stroke-width="6"/>
+    <path d="M-220,40 Q-170,15 -120,40 Q-70,65 -20,40 Q30,15 80,40 Q130,65 180,40 Q230,15 280,40" 
+          fill="none" stroke="#ffffff" stroke-width="4" opacity="0.6"/>
+  </g>
+</svg>

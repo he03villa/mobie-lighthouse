@@ -66,6 +66,12 @@ export class ActiveTenantService {
     return tenant.roles.includes('parent');
   }
 
+  isOwner(): boolean {
+    const tenant = this.activeTenantSubject.value;
+    if (!tenant) return false;
+    return tenant.roles.includes('owner');
+  }
+
   clear(): void {
     this.tenantsSubject.next([]);
     this.activeTenantSubject.next(null);

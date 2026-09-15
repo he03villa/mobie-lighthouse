@@ -23,6 +23,7 @@ import {
   personRemoveOutline,
 } from 'ionicons/icons';
 import { ParticipantService } from '../../../core/services/participant';
+import { ActiveTenantService } from '../../../core/services/active-tenant';
 import { Participant } from '../../../core/models/participant';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -53,12 +54,14 @@ import { NavigationService } from '../../../core/services/navigation';
 })
 export class ParticipantListPage {
   private participantService = inject(ParticipantService);
+  private activeTenant = inject(ActiveTenantService);
   private nav = inject(NavigationService);
 
   loading = true;
   participants: Participant[] = [];
   searchTerm = '';
   filter: 'all' | 'with_groups' | 'no_groups' = 'all';
+  isParent = false;
 
   constructor() {
     addIcons({
@@ -107,13 +110,18 @@ export class ParticipantListPage {
   }
 
   ionViewWillEnter(): void {
+    this.isParent = this.activeTenant.isParent();
     this.loadParticipants();
   }
 
   async loadParticipants(): Promise<void> {
     this.loading = true;
     try {
-      this.participants = await this.participantService.listAsync();
+      if (this.isParent) {
+        this.participants = await this.participantService.myParticipantsAsync();
+      } else {
+        this.participants = await this.participantService.listAsync();
+      }
     } catch {
       this.participants = [];
     } finally {

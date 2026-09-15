@@ -1,0 +1,28 @@
+.explanation-page {
+  padding: 20px;
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0;
+  font-size: 14px;
+  color: var(--lh-text-muted);
+}
+
+.activity-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--lh-text);
+  margin: 0 0 16px;
+}
+
+.explanation-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--lh-text);
+  white-space: pre-wrap;
+}

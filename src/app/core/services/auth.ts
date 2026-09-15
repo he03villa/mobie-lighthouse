@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ApiService } from './api';
 import { ActiveTenantService } from './active-tenant';
+import { SecureStorageService } from './secure-storage';
 import { ApiResponse } from '../models/api-response';
 import { LoginResponse, RegisterResponse, RefreshResponse, User } from '../models/user';
 import { environment } from '../../../environments/environment';
@@ -13,20 +14,37 @@ const USER_KEY = 'lighthouse_user';
 export class AuthService {
   private api = inject(ApiService);
   private activeTenant = inject(ActiveTenantService);
+  private secureStorage = inject(SecureStorageService);
   private base = environment.api.auth.name;
 
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
-  private userSubject = new BehaviorSubject<User | null>(this.loadUser());
+  private _token: string | null = null;
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private userSubject = new BehaviorSubject<User | null>(null);
 
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   user$ = this.userSubject.asObservable();
 
   constructor() {
-    this.activeTenant.restoreFromUser(this.userSubject.value);
+    this.initSession();
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+  private async initSession(): Promise<void> {
+    const token = await this.secureStorage.get(TOKEN_KEY);
+    if (token) {
+      this._token = token;
+      this.isAuthenticatedSubject.next(true);
+      const user = await this.loadUser();
+      this.userSubject.next(user);
+      this.activeTenant.restoreFromUser(user);
+    }
+  }
+
+  async getToken(): Promise<string | null> {
+    return this.secureStorage.get(TOKEN_KEY);
+  }
+
+  getTokenSync(): string | null {
+    return this._token;
   }
 
   getUser(): User | null {
@@ -37,7 +55,7 @@ export class AuthService {
     const res = await firstValueFrom(
       this.api.post<ApiResponse<LoginResponse>>(`/${this.base}/${environment.api.auth.services.login}`, { email, password })
     );
-    this.setSession(res.data.user, res.data.token);
+    await this.setSession(res.data.user, res.data.token);
     await this.meAsync();
     return res.data;
   }
@@ -52,9 +70,39 @@ export class AuthService {
     const res = await firstValueFrom(
       this.api.post<ApiResponse<RegisterResponse>>(`/${this.base}/${environment.api.auth.services.register}`, data)
     );
-    this.setSession(res.data.user, res.data.token);
+    await this.setSession(res.data.user, res.data.token);
     await this.meAsync();
     return res.data;
+  }
+
+  async acceptInvitationAsync(token: string, name: string, password: string): Promise<LoginResponse> {
+    const res = await firstValueFrom(
+      this.api.post<ApiResponse<LoginResponse>>(`/${this.base}/${environment.api.auth.services.acceptInvitation}`, {
+        token,
+        name,
+        password,
+        password_confirmation: password,
+      })
+    );
+    await this.setSession(res.data.user, res.data.token);
+    await this.meAsync();
+    return res.data;
+  }
+
+  async forgotPasswordAsync(email: string): Promise<void> {
+    await firstValueFrom(
+      this.api.post<ApiResponse<void>>(`/${this.base}/${environment.api.auth.services.forgotPassword}`, { email })
+    );
+  }
+
+  async resetPasswordAsync(token: string, password: string): Promise<void> {
+    await firstValueFrom(
+      this.api.post<ApiResponse<void>>(`/${this.base}/${environment.api.auth.services.resetPassword}`, {
+        token,
+        password,
+        password_confirmation: password,
+      })
+    );
   }
 
   async refreshTokenAsync(): Promise<RefreshResponse> {
@@ -62,7 +110,8 @@ export class AuthService {
       this.api.post<ApiResponse<RefreshResponse>>(`/${this.base}/${environment.api.auth.services.refresh}`)
     );
     if (res.data.token) {
-      localStorage.setItem(TOKEN_KEY, res.data.token);
+      this._token = res.data.token;
+      await this.secureStorage.set(TOKEN_KEY, res.data.token);
     }
     return res.data;
   }
@@ -71,7 +120,7 @@ export class AuthService {
     try {
       await firstValueFrom(this.api.post(`/${this.base}/${environment.api.auth.services.logout}`));
     } finally {
-      this.clearSession();
+      await this.clearSession();
     }
   }
 
@@ -80,55 +129,51 @@ export class AuthService {
       this.api.get<ApiResponse<User>>(`/${this.base}/${environment.api.auth.services.me}`)
     );
     this.userSubject.next(res.data);
-    localStorage.setItem(USER_KEY, JSON.stringify(res.data));
+    await this.secureStorage.set(USER_KEY, JSON.stringify(res.data));
     this.activeTenant.syncFromUser(res.data);
     return res.data;
   }
 
   isAuthenticatedSync(): boolean {
-    const token = this.getToken();
-    if (!token) {
-      return false;
-    }
+    return this.isAuthenticatedSubject.value;
+  }
+
+  async isAuthenticated(): Promise<boolean> {
+    const token = await this.secureStorage.get(TOKEN_KEY);
+    if (!token) return false;
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        this.clearSession();
+        await this.clearSession();
         return false;
       }
       return true;
     } catch {
-      this.clearSession();
+      await this.clearSession();
       return false;
     }
   }
 
-  async isAuthenticated(): Promise<boolean> {
-    return this.isAuthenticatedSync();
-  }
-
-  clearSession(): void {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+  async clearSession(): Promise<void> {
+    this._token = null;
+    await this.secureStorage.remove(TOKEN_KEY);
+    await this.secureStorage.remove(USER_KEY);
     this.isAuthenticatedSubject.next(false);
     this.userSubject.next(null);
     this.activeTenant.clear();
   }
 
-  private setSession(user: User, token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  private async setSession(user: User, token: string): Promise<void> {
+    this._token = token;
+    await this.secureStorage.set(TOKEN_KEY, token);
+    await this.secureStorage.set(USER_KEY, JSON.stringify(user));
     this.isAuthenticatedSubject.next(true);
     this.userSubject.next(user);
   }
 
-  private hasToken(): boolean {
-    return !!this.getToken();
-  }
-
-  private loadUser(): User | null {
-    const raw = localStorage.getItem(USER_KEY);
+  private async loadUser(): Promise<User | null> {
+    const raw = await this.secureStorage.get(USER_KEY);
     if (!raw) return null;
     try {
       return JSON.parse(raw);

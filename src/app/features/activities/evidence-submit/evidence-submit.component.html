@@ -1,7 +1,7 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-activities" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/activities" text=""></ion-back-button>
+      <ion-back-button [defaultHref]="backHref" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>Enviar evidencia</ion-title>
   </ion-toolbar>
@@ -145,6 +145,13 @@
     @if (files.length > 0) {
       <div class="form-section">
         <h3 class="section-title">Archivos adjuntos</h3>
+
+        @if (filePreview) {
+          <div class="image-preview">
+            <img [src]="filePreview" alt="Preview del archivo" />
+          </div>
+        }
+
         <div class="file-list">
           @for (file of files; track $index; let i = $index) {
             <div class="file-preview">

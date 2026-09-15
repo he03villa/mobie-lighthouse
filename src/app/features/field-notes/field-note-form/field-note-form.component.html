@@ -1,12 +1,17 @@
-<ion-header [translucent]="true">
+<ion-header class="lh-page-header lh-header-fieldnotes" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/field-notes"></ion-back-button>
     </ion-buttons>
-    <ion-title>Nueva nota de campo</ion-title>
+    <ion-title>{{ editMode ? 'Editar nota' : 'Nueva nota de campo' }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="save()" [disabled]="loading">
-        @if (loading) {
+      @if (editMode) {
+        <ion-button (click)="deleteNote()">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      }
+      <ion-button (click)="save()" [disabled]="saving || loading">
+        @if (saving) {
           <ion-spinner name="crescent" slot="end"></ion-spinner>
         }
         Guardar
@@ -17,62 +22,70 @@
 
 <ion-content [fullscreen]="true">
   <div class="page">
-    <div class="surface-panel">
-      <div class="lh-field">
-        <label class="lh-field__label">ID del participante</label>
-        <div class="lh-field__control">
-          <ion-input
-            [(ngModel)]="participantId"
-            placeholder="UUID del participante"
-            [disabled]="loading"
-          ></ion-input>
-        </div>
-      </div>
+    @if (loading) {
+      <app-loading-spinner message="Cargando nota..."></app-loading-spinner>
+    } @else {
+      <div class="surface-panel">
+        @if (!editMode) {
+          <div class="lh-field">
+            <label class="lh-field__label">ID del participante</label>
+            <div class="lh-field__control">
+              <ion-input
+                [(ngModel)]="participantId"
+                placeholder="UUID del participante"
+                [disabled]="saving"
+              ></ion-input>
+            </div>
+          </div>
+        }
 
-      <div class="lh-field">
-        <label class="lh-field__label">Contenido</label>
-        <div class="lh-field__control">
-          <ion-textarea
-            [(ngModel)]="content"
-            placeholder="Escribe tu nota de campo..."
-            [rows]="5"
-            [disabled]="loading"
-          ></ion-textarea>
+        <div class="lh-field">
+          <label class="lh-field__label">Contenido</label>
+          <div class="lh-field__control">
+            <ion-textarea
+              [(ngModel)]="content"
+              placeholder="Escribe tu nota de campo..."
+              [rows]="5"
+              [disabled]="saving"
+            ></ion-textarea>
+          </div>
         </div>
-      </div>
 
-      <div class="lh-field">
-        <label class="lh-field__label">Visibilidad</label>
-        <div class="lh-field__control">
-          <ion-select [(ngModel)]="visibility" [disabled]="loading">
-            <ion-select-option value="private">Privada</ion-select-option>
-            <ion-select-option value="shared_family">Compartir con familia</ion-select-option>
-            <ion-select-option value="shared_participant">Compartir con participante</ion-select-option>
-            <ion-select-option value="public">Publica</ion-select-option>
-          </ion-select>
+        <div class="lh-field">
+          <label class="lh-field__label">Visibilidad</label>
+          <div class="lh-field__control">
+            <ion-select [(ngModel)]="visibility" [disabled]="saving">
+              <ion-select-option value="private">Privada</ion-select-option>
+              <ion-select-option value="shared_family">Compartir con familia</ion-select-option>
+              <ion-select-option value="shared_participant">Compartir con participante</ion-select-option>
+              <ion-select-option value="public">Publica</ion-select-option>
+            </ion-select>
+          </div>
         </div>
-      </div>
 
-      <div class="lh-field">
-        <label class="lh-field__label">Fecha de sesion</label>
-        <div class="lh-field__control">
-          <ion-input
-            type="date"
-            [(ngModel)]="sessionDate"
-            [disabled]="loading"
-          ></ion-input>
+        <div class="lh-field">
+          <label class="lh-field__label">Fecha de sesion</label>
+          <div class="lh-field__control">
+            <ion-input
+              type="date"
+              [(ngModel)]="sessionDate"
+              [disabled]="saving"
+            ></ion-input>
+          </div>
         </div>
-      </div>
 
-      <ion-button
-        expand="block"
-        class="save-btn"
-        (click)="save()"
-        [disabled]="loading"
-      >
-        <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
-        Guardar nota
-      </ion-button>
-    </div>
+        <ion-button
+          expand="block"
+          class="save-btn"
+          (click)="save()"
+          [disabled]="saving || loading"
+        >
+          @if (saving) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ editMode ? 'Actualizar nota' : 'Guardar nota' }}
+        </ion-button>
+      </div>
+    }
   </div>
 </ion-content>
